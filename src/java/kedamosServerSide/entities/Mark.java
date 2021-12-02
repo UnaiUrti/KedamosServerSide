@@ -10,5 +10,5 @@ package kedamosServerSide.entities;
  * @author Irkus de la Fuente
  */
 public enum Mark {
-    one,two,three,four,five
+    ONE,TWO,THREE,FOUR,FIVE
 }
