@@ -53,13 +53,11 @@ public class Comment implements Serializable {
        * Campo relacional con user
        */  
     @ManyToOne
-    @JoinColumn(name="user_id")
     private User user;
     /**
      * Campo relacional de eventos
      */
     @ManyToOne
-    @JoinColumn(name="event_id")
     private Event event;
     //Setters y Getters
     /**
