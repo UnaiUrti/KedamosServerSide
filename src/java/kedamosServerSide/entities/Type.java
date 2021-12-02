@@ -6,5 +6,5 @@ package kedamosServerSide.entities;
  * @author Irkus de la Fuente
  */
 public enum Type {
-    Camarero,Seguridad,Dj,Payaso,Mago,Humorista,Cocinero,Guia,Arbitro,Coctelero,Cantante,Musico,Actor
+    CAMARERO,SEGURIDAD,DJ,PAYASO,MAGO,HUMOSRISTA,COCINERO,GUIA,ARBITRO,COCTELERO,CANTANTE,MUSICO,ACTOR
 }
