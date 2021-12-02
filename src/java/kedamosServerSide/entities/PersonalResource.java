@@ -60,7 +60,6 @@ public class PersonalResource implements Serializable {
      * Este es el campo relacional el cual une los eventos mediante la id
      */
     @ManyToOne
-    @JoinColumn(name = "event_id")
     private Event event;
     
     //Getters y setters
