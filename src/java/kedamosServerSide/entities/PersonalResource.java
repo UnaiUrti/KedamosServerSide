@@ -163,7 +163,7 @@ public class PersonalResource implements Serializable {
     }
     //HashCode
 /**
- * Haschcode
+ * Hashcode
  * @return hash
  */
     @Override
