@@ -25,7 +25,7 @@ import javax.persistence.TemporalType;
  * @author Irkus de la Fuente
  */
 @Entity
-@Table(name="coment",schema="kedamosdb")
+@Table(name="comment",schema="kedamosdb")
 public class Comment implements Serializable {
 //Atribuos
     private static final long serialVersionUID = 1L;
