@@ -17,6 +17,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -64,6 +66,7 @@ public class Place implements Serializable {
      * Es un campo que puede dejarse nulo porque puede que el sitio no se haya
      * renovado
      */
+    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp dateRenewal;
     
     /**
