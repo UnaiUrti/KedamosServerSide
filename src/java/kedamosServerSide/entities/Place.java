@@ -73,7 +73,7 @@ public class Place implements Serializable {
      * Atributo de una lista de eventos
      * Aqui se van a guardar todos los eventos que se realizan en este lugar
      */
-    @OneToMany(cascade=ALL, mappedBy="event")
+    @OneToMany(cascade=ALL, mappedBy="place")
     private Set<Event> event;
 
     /**
