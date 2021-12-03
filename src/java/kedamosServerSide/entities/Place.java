@@ -136,8 +136,8 @@ public class Place implements Serializable {
      * Set del precio
      * @param place 
      */
-    public void setPlace(Float place) {
-        this.price = place;
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
     /**
@@ -172,6 +172,8 @@ public class Place implements Serializable {
     public void setEvent(Set<Event> event) {
         this.event = event;
     }
+    
+    
 
     /**
      * Hash code de la entidad
