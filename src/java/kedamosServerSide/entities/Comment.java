@@ -8,33 +8,45 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- *Entidad de comentarios
+ * Entidad de comentarios
+ *
  * @author Irkus de la Fuente
  */
 @Entity
-@Table(name="comment",schema="kedamosdb")
+@Table(name = "comment", schema = "kedamosdb")
 public class Comment implements Serializable {
 //Atribuos
+
     private static final long serialVersionUID = 1L;
     /**
      * Clave primaria
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long comment_id;
+    @EmbeddedId
+    private Comment_id comment_id;
+
+    /**
+     * Campo relacional con user
+     */
+    @MapsId("user_id")
+    @ManyToOne
+    private User user;
+    /**
+     * Campo relacional de eventos
+     */
+    @MapsId("event_id")
+    @ManyToOne
+    private Event event;
     /**
      * Contenido del comentario
      */
@@ -49,113 +61,133 @@ public class Comment implements Serializable {
      */
     @Enumerated(EnumType.ORDINAL)
     private Mark mark;
-      /**
-       * Campo relacional con user
-       */  
-    @ManyToOne
-    private User user;
-    /**
-     * Campo relacional de eventos
-     */
-    @ManyToOne
-    private Event event;
+
     //Setters y Getters
     /**
-     * Get del id
-     * @return Long
+     * Get id del comentario embeeded
+     *
+     * @return Comment_id
      */
-    public Long getComment_id() {
+
+    public Comment_id getComment_id() {
         return comment_id;
     }
-/**
- * Set del id
- * @param comment_id 
- */
-    public void setComment_id(Long comment_id) {
+
+    /**
+     * Set id del comentario embeeded
+     *
+     * @param comment_id
+     */
+
+    public void setComment_id(Comment_id comment_id) {
         this.comment_id = comment_id;
     }
-/**
- * Get de la descripcion
- * @return String
- */
+
+    /**
+     * Get de la descripcion
+     *
+     * @return String
+     */
     public String getDescription() {
         return description;
     }
-/**
- * Set de la descripcion
- * @param description 
- */
+
+    /**
+     * Set de la descripcion
+     *
+     * @param description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
-/**
- * Get de la fecha del comentario
- * @return Timestamp
- */
+
+    /**
+     * Get de la fecha del comentario
+     *
+     * @return Timestamp
+     */
     public Timestamp getDate_comment() {
         return date_comment;
     }
-/**
- * Set de la fecha de comentario
- * @param date_comment 
- */
+
+    /**
+     * Set de la fecha de comentario
+     *
+     * @param date_comment
+     */
     public void setDate_comment(Timestamp date_comment) {
         this.date_comment = date_comment;
     }
-/**
- * Get de la valoracion
- * @return Mark
- */
+
+    /**
+     * Get de la valoracion
+     *
+     * @return Mark
+     */
     public Mark getMark() {
         return mark;
     }
-/**
- * Set de la valoracion
- * @param mark 
- */
+
+    /**
+     * Set de la valoracion
+     *
+     * @param mark
+     */
     public void setMark(Mark mark) {
         this.mark = mark;
     }
-/**
- * Get del usuario campo relacional
- * @return User
- */
+
+    /**
+     * Get del usuario campo relacional
+     *
+     * @return User
+     */
     public User getUser() {
         return user;
     }
-/**
- * Set del usuario campo relacional
- * @param user 
- */
+
+    /**
+     * Set del usuario campo relacional
+     *
+     * @param user
+     */
     public void setUser(User user) {
         this.user = user;
     }
-/**
- * Get del evento campo relacional
- * @return Event
- */
+
+    /**
+     * Get del evento campo relacional
+     *
+     * @return Event
+     */
     public Event getEvent() {
         return event;
     }
-/**
- * Set del evento campo relacional
- * @param event 
- */
+
+    /**
+     * Set del evento campo relacional
+     *
+     * @param event
+     */
     public void setEvent(Event event) {
         this.event = event;
     }
-/**
- * ToString
- * @return String
- */
+
+    /**
+     * ToString
+     *
+     * @return String
+     */
     @Override
     public String toString() {
         return "Comment{" + "comment_id=" + comment_id + ", description=" + description + ", date_comment=" + date_comment + ", mark=" + mark + ", user=" + user + ", event=" + event + '}';
     }
-/**
- * Hashcode
- * @return int
- */
+
+    /**
+     * Hashcode
+     *
+     * @return int
+     */
     @Override
     public int hashCode() {
         int hash = 5;
@@ -167,11 +199,13 @@ public class Comment implements Serializable {
         hash = 97 * hash + Objects.hashCode(this.event);
         return hash;
     }
-/**
- * Equals
- * @param obj
- * @return boolean
- */
+
+    /**
+     * Equals
+     *
+     * @param obj
+     * @return boolean
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -199,13 +233,7 @@ public class Comment implements Serializable {
         if (!Objects.equals(this.user, other.user)) {
             return false;
         }
-        if (!Objects.equals(this.event, other.event)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.event, other.event);
     }
 
-    
-
-    
 }
