@@ -65,12 +65,12 @@ public class Client extends User implements Serializable {
         this.joinEvents = joinEvents;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
+    public Set<Comment> getMyComments() {
+        return myComments;
     }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
+    public void setMyComments(Set<Comment> myComments) {
+        this.myComments = myComments;
     }
     
 }
