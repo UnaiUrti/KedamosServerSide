@@ -251,7 +251,9 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "kedamosServerSide.entities.Event[ id=" + event_id + " ]";
+        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", isRevised=" + isRevised + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", place=" + place + ", organizer=" + organizer + '}';
     }
+
+ 
 
 }
