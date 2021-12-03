@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
- *
+ * Entidad que contiene todos los datos relacionados con los Eventos
  * @author Adrian Franco
  */
 @Entity
