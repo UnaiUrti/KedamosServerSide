@@ -6,24 +6,22 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Date;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad revisar que se crea con la relacion de EventManager y Event
  * @author UnaiUrtiaga
  */
 @Entity
+@XmlRootElement
 public class Revise implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,7 +37,7 @@ public class Revise implements Serializable {
      */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp revisionDate;
+    private Date revisionDate;
     
     /**
      * Atributo primario que guarda el manager que ha revisado el evento
@@ -75,7 +73,7 @@ public class Revise implements Serializable {
      * Get de la fecha de revision
      * @return Devuelve la fecha de la revision
      */
-    public Timestamp getRevisionDate() {
+    public Date getRevisionDate() {
         return revisionDate;
     }
 
@@ -83,7 +81,7 @@ public class Revise implements Serializable {
      * Set de la fecha de revision
      * @param revisionDate 
      */
-    public void setRevisionDate(Timestamp revisionDate) {
+    public void setRevisionDate(Date revisionDate) {
         this.revisionDate = revisionDate;
     }
 

@@ -2,7 +2,7 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,11 +10,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *Entidad PersonalResource 
@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="personalresource",schema="kedamosdb")
+@XmlRootElement
 public class PersonalResource implements Serializable {
     //Atributos
     private static final long serialVersionUID = 1L;
@@ -48,12 +49,12 @@ public class PersonalResource implements Serializable {
      * Fecha de fin de contrato
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp dateExpired;
+    private Date dateExpired;
     /**
      * Fecha contratado
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp dateHired;
+    private Date dateHired;
     
     //Campo relacional
     /**
@@ -116,28 +117,28 @@ public class PersonalResource implements Serializable {
  * Get de la fecha de fin de contrato
  * @return dateExpired
  */
-    public Timestamp getDateExpired() {
+    public Date getDateExpired() {
         return dateExpired;
     }
 /**
  * Set de la fecha de fin de contrato
  * @param dateExpired 
  */
-    public void setDateExpired(Timestamp dateExpired) {
+    public void setDateExpired(Date dateExpired) {
         this.dateExpired = dateExpired;
     }
 /**
  * Get de fecha de contratacion
  * @return dateHired
  */
-    public Timestamp getDateHired() {
+    public Date getDateHired() {
         return dateHired;
     }
 /**
  * Set de fecha de contratacion
  * @param dateHired 
  */
-    public void setDateHired(Timestamp dateHired) {
+    public void setDateHired(Date dateHired) {
         this.dateHired = dateHired;
     }
 /**

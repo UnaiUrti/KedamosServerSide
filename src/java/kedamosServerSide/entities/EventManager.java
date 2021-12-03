@@ -5,12 +5,15 @@ import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que representa al usuario que administra los eventos.
  * @author Steven Arce
  */
 @Entity
+@XmlRootElement
 public class EventManager extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,6 +31,7 @@ public class EventManager extends User implements Serializable {
         this.managerCategoy = managerCategoy;
     }
 
+    @XmlTransient
     public Set<Revise> getMyRevisions() {
         return myRevisions;
     }

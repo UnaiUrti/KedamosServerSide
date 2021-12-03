@@ -6,7 +6,7 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,6 +17,7 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad de comentarios
@@ -25,6 +26,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "comment", schema = "kedamosdb")
+@XmlRootElement
 public class Comment implements Serializable {
 //Atribuos
 
@@ -55,7 +57,7 @@ public class Comment implements Serializable {
      * Fecha en la que se realizo el comentario
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp date_comment;
+    private Date date_comment;
     /**
      * Valoracion del evento de uno a cinco
      */
@@ -104,9 +106,9 @@ public class Comment implements Serializable {
     /**
      * Get de la fecha del comentario
      *
-     * @return Timestamp
+     * @return Date
      */
-    public Timestamp getDate_comment() {
+    public Date getDate_comment() {
         return date_comment;
     }
 
@@ -115,7 +117,7 @@ public class Comment implements Serializable {
      *
      * @param date_comment
      */
-    public void setDate_comment(Timestamp date_comment) {
+    public void setDate_comment(Date date_comment) {
         this.date_comment = date_comment;
     }
 
