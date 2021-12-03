@@ -3,8 +3,6 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
-import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,10 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,8 +28,8 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long user_id;
     private String fullName;
     @Enumerated(EnumType.STRING)
     private UserStatus status; 
@@ -47,25 +41,13 @@ public class User implements Serializable {
     private String password;
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
-    
-    @OneToMany(mappedBy = "organizer", cascade = ALL)
-    private Set<Event> myEvents;
-    
-    @ManyToMany(cascade = ALL)
-    @JoinTable(name = "user_event", schema = "kedamosdb",
-               joinColumns = @JoinColumn(name = "user_id"),
-               inverseJoinColumns = @JoinColumn(name = "event_id"))
-    private Set<Event> events; 
-    
-    @OneToMany(mappedBy = "user",cascade = ALL)
-    private Set<Comment> comments;
 
-    public Long getId() {
-        return id;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public String getFullName() {
@@ -123,35 +105,11 @@ public class User implements Serializable {
     public void setPrivilege(UserPrivilege privilege) {
         this.privilege = privilege;
     }
-
-    public Set<Event> getMyEvents() {
-        return myEvents;
-    }
-
-    public void setMyEvents(Set<Event> myEvents) {
-        this.myEvents = myEvents;
-    }
-
-    public Set<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(Set<Event> events) {
-        this.events = events;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }   
-
+    
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 43 * hash + Objects.hashCode(this.id);
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.user_id);
         return hash;
     }
 
@@ -167,7 +125,7 @@ public class User implements Serializable {
             return false;
         }
         final User other = (User) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.user_id, other.user_id)) {
             return false;
         }
         return true;
@@ -175,7 +133,11 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", fullName=" + fullName + ", status=" + status + ", lastPasswordChange=" + lastPasswordChange + ", email=" + email + ", username=" + username + ", password=" + password + ", privilege=" + privilege + ", myEvents=" + myEvents + ", events=" + events + ", comments=" + comments + '}';
+        return "User{" + "user_id=" + user_id + ", fullName=" + fullName + ", status=" + status + ", lastPasswordChange=" + lastPasswordChange + ", email=" + email + ", username=" + username + ", password=" + password + ", privilege=" + privilege + '}';
     }
+
+    
+
+    
     
 }

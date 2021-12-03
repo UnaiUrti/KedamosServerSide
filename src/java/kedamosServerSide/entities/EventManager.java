@@ -1,8 +1,10 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 /**
  * Entidad que representa al usuario que administra los eventos.
@@ -14,6 +16,9 @@ public class EventManager extends User implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private Category managerCategoy;
+    
+    @OneToMany(mappedBy = "user", cascade = ALL)
+    private Set<Revise> myRevisions;
 
     public Category getManagerCategoy() {
         return managerCategoy;
@@ -22,36 +27,19 @@ public class EventManager extends User implements Serializable {
     public void setManagerCategoy(Category managerCategoy) {
         this.managerCategoy = managerCategoy;
     }
+
+    public Set<Revise> getMyRevisions() {
+        return myRevisions;
+    }
+
+    public void setMyRevisions(Set<Revise> myRevisions) {
+        this.myRevisions = myRevisions;
+    }
+
     
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 61 * hash + Objects.hashCode(this.managerCategoy);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final EventManager other = (EventManager) obj;
-        if (this.managerCategoy != other.managerCategoy) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "EventManager{" + "managerCategoy=" + managerCategoy + '}';
-    }
+  
+    
+   
     
     
 }

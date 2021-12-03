@@ -1,8 +1,13 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 /**
  * Entidad que representa al usuario que es un cliente. 
@@ -15,6 +20,18 @@ public class Client extends User implements Serializable {
     
     private Long accountNumber;
     private boolean isPremium;
+
+    @OneToMany(mappedBy = "organizer", cascade = ALL)
+    private Set<Event> myEvents;
+    
+    @ManyToMany(cascade = ALL)
+    @JoinTable(name = "user_event", schema = "kedamosdb",
+               joinColumns = @JoinColumn(name = "user_id"),
+               inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private Set<Event> joinEvents; 
+    
+    @OneToMany(mappedBy = "user", cascade = ALL)
+    private Set<Comment> myComments;
 
     public Long getAccountNumber() {
         return accountNumber;
@@ -32,38 +49,28 @@ public class Client extends User implements Serializable {
         this.isPremium = isPremium;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.accountNumber);
-        hash = 97 * hash + (this.isPremium ? 1 : 0);
-        return hash;
+    public Set<Event> getMyEvents() {
+        return myEvents;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Client other = (Client) obj;
-        if (this.isPremium != other.isPremium) {
-            return false;
-        }
-        if (!Objects.equals(this.accountNumber, other.accountNumber)) {
-            return false;
-        }
-        return true;
+    public void setMyEvents(Set<Event> myEvents) {
+        this.myEvents = myEvents;
     }
 
-    @Override
-    public String toString() {
-        return "Client{" + "accountNumber=" + accountNumber + ", isPremium=" + isPremium + '}';
+    public Set<Event> getJoinEvents() {
+        return joinEvents;
+    }
+
+    public void setJoinEvents(Set<Event> joinEvents) {
+        this.joinEvents = joinEvents;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
     
 }
