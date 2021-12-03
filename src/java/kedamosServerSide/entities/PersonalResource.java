@@ -1,0 +1,212 @@
+
+package kedamosServerSide.entities;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+/**
+ *Entidad PersonalResource 
+ * @author Irkus de la Fuente
+ */
+@Entity
+@Table(name="personalresource",schema="kedamosdb")
+public class PersonalResource implements Serializable {
+    //Atributos
+    private static final long serialVersionUID = 1L;
+    /**
+     * Clave primaria de la entidad
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long personalresource_id;
+    /**
+     * Cantidad del personal requerida
+     */
+    private Long quantity;
+    /**
+     * Enumeracion que indica que tipo de personal es
+     */
+    @Enumerated(EnumType.ORDINAL)
+    private Type type;
+    /**
+     * Precio del personal
+     */
+    private Float price;
+    /**
+     * Fecha de fin de contrato
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp dateExpired;
+    /**
+     * Fecha contratado
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp dateHired;
+    
+    //Campo relacional
+    /**
+     * Este es el campo relacional el cual une los eventos mediante la id
+     */
+    @ManyToOne
+    private Event event;
+    
+    //Getters y setters
+    /**
+     * Get de la id
+     * @return personalresource_id
+     */
+    public Long getPersonalresource_id() {
+        return personalresource_id;
+    }
+/**
+ * Get de la cantidad
+ * @return quantity
+ */
+    public Long getQuantity() {
+        return quantity;
+    }
+/**
+ * Set de la cantidad
+ * @param quantity 
+ */
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+/**
+ * Set del tipo
+ * @return type
+ */
+    public Type getType() {
+        return type;
+    }
+/**
+ * Set del tipo
+ * @param type 
+ */
+    public void setType(Type type) {
+        this.type = type;
+    }
+/**
+ * Get del precio
+ * @return price
+ */
+    public Float getPrice() {
+        return price;
+    }
+/**
+ * Set del precio
+ * @param price 
+ */
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+/**
+ * Get de la fecha de fin de contrato
+ * @return dateExpired
+ */
+    public Timestamp getDateExpired() {
+        return dateExpired;
+    }
+/**
+ * Set de la fecha de fin de contrato
+ * @param dateExpired 
+ */
+    public void setDateExpired(Timestamp dateExpired) {
+        this.dateExpired = dateExpired;
+    }
+/**
+ * Get de fecha de contratacion
+ * @return dateHired
+ */
+    public Timestamp getDateHired() {
+        return dateHired;
+    }
+/**
+ * Set de fecha de contratacion
+ * @param dateHired 
+ */
+    public void setDateHired(Timestamp dateHired) {
+        this.dateHired = dateHired;
+    }
+/**
+ * Get del campo relacional
+ * @return event
+ */
+    public Event getEvent() {
+        return event;
+    }
+/**
+ * Set del campo relacional
+ * @param event 
+ */
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+/**
+ * Set del id
+ * @param id 
+ */
+    public void setPersonalresource_id(Long id) {
+        this.personalresource_id = personalresource_id;
+    }
+    //HashCode
+/**
+ * Hashcode
+ * @return hash
+ */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.personalresource_id);
+        hash = 37 * hash + Objects.hashCode(this.quantity);
+        hash = 37 * hash + Objects.hashCode(this.type);
+        hash = 37 * hash + Objects.hashCode(this.price);
+        hash = 37 * hash + Objects.hashCode(this.dateExpired);
+        hash = 37 * hash + Objects.hashCode(this.dateHired);
+        hash = 37 * hash + Objects.hashCode(this.event);
+        return hash;
+    }
+
+  //Equals
+/**
+ * Equals
+ * @param object
+ * @return boolean
+ */
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof PersonalResource)) {
+            return false;
+        }
+        PersonalResource other = (PersonalResource) object;
+        if ((this.personalresource_id == null && other.personalresource_id != null) || (this.personalresource_id != null && !this.personalresource_id.equals(other.personalresource_id))) {
+            return false;
+        }
+        return true;
+    }
+    //ToStirng
+/**
+ * ToString
+ * @return String
+ */
+    @Override
+    public String toString() {
+        return "PersonalResource{" + "id=" + personalresource_id + ", quantity=" + quantity + ", type=" + type + ", price=" + price + ", dateExpired=" + dateExpired + ", dateHired=" + dateHired + ", event=" + event + '}';
+    }
+
+    
+    
+}
