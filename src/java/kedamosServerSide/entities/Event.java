@@ -6,7 +6,7 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
@@ -22,6 +22,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que contiene todos los datos relacionados con los Eventos
@@ -29,6 +31,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "event", schema = "kedamosdb")
+@XmlRootElement
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +47,7 @@ public class Event implements Serializable {
      * usuarios vean la fecha de inicio
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp date;
+    private Date date;
     
     /**
      * Atributos para saber cuantos clientes hay apuntados al evento, el mínimo
@@ -86,15 +89,19 @@ public class Event implements Serializable {
     /**
      * Lista de comentarios de los usuarios sonbre el Evento
      */
-    @OneToMany(mappedBy="event", cascade=ALL)
+    @OneToMany(mappedBy="event",cascade=ALL)
     private Set<Comment> comment;
     
     /**
      * Personal necesario para el evento
      */
-    @OneToMany (mappedBy="event", cascade=ALL)
+    @OneToMany (mappedBy="event",cascade=ALL)
     private Set<PersonalResource> personalResource;
-    
+    /**
+     * 
+     */
+    @OneToMany(mappedBy = "event",cascade = ALL)
+    private Set<Revise> eventRevisions;
     /**
      * Lugar en el que se hace el evento
      */
@@ -107,11 +114,11 @@ public class Event implements Serializable {
     @ManyToOne
     private Client organizer;
 
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -163,6 +170,7 @@ public class Event implements Serializable {
         this.category = category;
     }
 
+    @XmlTransient
     public Set<Client> getClient() {
         return client;
     }
@@ -172,6 +180,7 @@ public class Event implements Serializable {
     }
 
 
+    @XmlTransient
     public Set<Comment> getComment() {
         return comment;
     }
@@ -180,6 +189,7 @@ public class Event implements Serializable {
         this.comment = comment;
     }
 
+    @XmlTransient
     public Set<PersonalResource> getPersonalResource() {
         return personalResource;
     }

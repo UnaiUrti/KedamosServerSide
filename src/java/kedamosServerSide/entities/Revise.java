@@ -44,7 +44,7 @@ public class Revise implements Serializable {
      */
     @MapsId("user_id")
     @ManyToOne
-    private EventManager reviser;
+    private EventManager eventManager;
     
     /**
      * Atributo primario que guarda el evento que ha sido revisado
@@ -85,20 +85,24 @@ public class Revise implements Serializable {
         this.revisionDate = revisionDate;
     }
 
+    public ReviseId getRevise_id() {
+        return revise_id;
+    }
+
+    public void setRevise_id(ReviseId revise_id) {
+        this.revise_id = revise_id;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
     /**
      * Get del manager que ha revisado el evento
      * @return Devuelve el manager
      */
-    public EventManager getReviser() {
-        return reviser;
-    }
-
-    /**
-     * Set del manager que ha revisado el evento
-     * @param reviser 
-     */
-    public void setReviser(EventManager reviser) {
-        this.reviser = reviser;
+    public void setEventManager(EventManager eventManager) {    
+        this.eventManager = eventManager;
     }
 
     /**
@@ -151,7 +155,7 @@ public class Revise implements Serializable {
      */
     @Override
     public String toString() {
-        return "Revise{" + "revise_id=" + revise_id + ", reviseDate=" + revisionDate + ", reviser=" + reviser + ", event=" + event + '}';
+        return "Revise{" + "revise_id=" + revise_id + ", reviseDate=" + revisionDate + ", reviser=" + eventManager + ", event=" + event + '}';
     }
 
     

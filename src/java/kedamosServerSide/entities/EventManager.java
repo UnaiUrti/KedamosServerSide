@@ -3,6 +3,7 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Steven Arce
  */
 @Entity
+@DiscriminatorValue("event_manager")
 @XmlRootElement
 public class EventManager extends User implements Serializable {
 
@@ -20,7 +22,7 @@ public class EventManager extends User implements Serializable {
     
     private Category managerCategoy;
     
-    @OneToMany(mappedBy = "user", cascade = ALL)
+    @OneToMany(mappedBy = "eventManager", cascade = ALL)
     private Set<Revise> myRevisions;
 
     public Category getManagerCategoy() {

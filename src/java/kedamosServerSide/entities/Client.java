@@ -3,6 +3,7 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Steven Arce
  */
 @Entity
+@DiscriminatorValue("client")
 @XmlRootElement
 public class Client extends User implements Serializable {
 
@@ -29,11 +31,11 @@ public class Client extends User implements Serializable {
     
     @ManyToMany(cascade = ALL)
     @JoinTable(name = "user_event", schema = "kedamosdb",
-             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-             inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "event_id"))
+               joinColumns = @JoinColumn(name = "user_id"),
+               inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> joinEvents; 
     
-    @OneToMany(mappedBy = "user", cascade = ALL)
+    @OneToMany(mappedBy = "client", cascade = ALL)
     private Set<Comment> myComments;
 
     public Long getAccountNumber() {
