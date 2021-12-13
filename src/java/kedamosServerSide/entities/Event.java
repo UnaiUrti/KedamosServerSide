@@ -71,7 +71,7 @@ public class Event implements Serializable {
      * Enumeracion de todas las categorias que puede seleccionar el Cliente 
      * al crear Eventos
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     /**

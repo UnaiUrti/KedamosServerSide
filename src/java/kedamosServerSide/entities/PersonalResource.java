@@ -39,7 +39,7 @@ public class PersonalResource implements Serializable {
     /**
      * Enumeracion que indica que tipo de personal es
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Type type;
     /**
      * Precio del personal

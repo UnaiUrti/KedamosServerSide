@@ -11,6 +11,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author UnaiUrtiaga
  */
 @Entity
+@Table (name="revise", schema="kedamosdb")
 @XmlRootElement
 public class Revise implements Serializable {
 
