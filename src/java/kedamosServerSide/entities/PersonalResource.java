@@ -11,11 +11,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@NamedQuery(
+    name="findPersonalByType",query="SELECT a FROM PersonalResource a WHERE a.event.event_id=:event and a.type=:type"
+)
 /**
  *Entidad PersonalResource 
  * @author Irkus de la Fuente
