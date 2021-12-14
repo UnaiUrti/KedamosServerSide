@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -16,6 +18,18 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entidad que representa al usuario que es un cliente. 
  * @author Steven Arce
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getClientByEmail", query = "SELECT c FROM Client c WHERE c.email = :email"
+    )/*
+    @NamedQuery(
+            name = "findAllComments", query = "SELECT c"
+    ),
+    @NamedQuery(
+            name = "", query = ""
+    )
+    */
+})
 @Entity
 @DiscriminatorValue("client")
 @XmlRootElement

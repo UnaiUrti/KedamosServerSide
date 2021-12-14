@@ -6,6 +6,7 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
@@ -55,6 +56,36 @@ public class ReviseId implements Serializable{
     public void setEvent_id(Long event_id) {
         this.event_id = event_id;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.user_id);
+        hash = 53 * hash + Objects.hashCode(this.event_id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ReviseId other = (ReviseId) obj;
+        if (!Objects.equals(this.user_id, other.user_id)) {
+            return false;
+        }
+        if (!Objects.equals(this.event_id, other.event_id)) {
+            return false;
+        }
+        return true;
+    }
+    
     
     
     

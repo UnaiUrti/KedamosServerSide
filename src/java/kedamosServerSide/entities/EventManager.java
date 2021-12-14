@@ -5,6 +5,8 @@ import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -20,6 +22,7 @@ public class EventManager extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
+    @Enumerated(EnumType.STRING)
     private Category managerCategoy;
     
     @OneToMany(mappedBy = "eventManager", cascade = ALL)
