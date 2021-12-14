@@ -6,24 +6,24 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Date;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad revisar que se crea con la relacion de EventManager y Event
  * @author UnaiUrtiaga
  */
 @Entity
+@Table (name="revise", schema="kedamosdb")
+@XmlRootElement
 public class Revise implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,14 +39,14 @@ public class Revise implements Serializable {
      */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp revisionDate;
+    private Date revisionDate;
     
     /**
      * Atributo primario que guarda el manager que ha revisado el evento
      */
     @MapsId("user_id")
     @ManyToOne
-    private EventManager reviser;
+    private EventManager eventManager;
     
     /**
      * Atributo primario que guarda el evento que ha sido revisado
@@ -75,7 +75,7 @@ public class Revise implements Serializable {
      * Get de la fecha de revision
      * @return Devuelve la fecha de la revision
      */
-    public Timestamp getRevisionDate() {
+    public Date getRevisionDate() {
         return revisionDate;
     }
 
@@ -83,24 +83,28 @@ public class Revise implements Serializable {
      * Set de la fecha de revision
      * @param revisionDate 
      */
-    public void setRevisionDate(Timestamp revisionDate) {
+    public void setRevisionDate(Date revisionDate) {
         this.revisionDate = revisionDate;
+    }
+
+    public ReviseId getRevise_id() {
+        return revise_id;
+    }
+
+    public void setRevise_id(ReviseId revise_id) {
+        this.revise_id = revise_id;
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
     }
 
     /**
      * Get del manager que ha revisado el evento
      * @return Devuelve el manager
      */
-    public EventManager getReviser() {
-        return reviser;
-    }
-
-    /**
-     * Set del manager que ha revisado el evento
-     * @param reviser 
-     */
-    public void setReviser(EventManager reviser) {
-        this.reviser = reviser;
+    public void setEventManager(EventManager eventManager) {    
+        this.eventManager = eventManager;
     }
 
     /**
@@ -153,7 +157,7 @@ public class Revise implements Serializable {
      */
     @Override
     public String toString() {
-        return "Revise{" + "revise_id=" + revise_id + ", reviseDate=" + revisionDate + ", reviser=" + reviser + ", event=" + event + '}';
+        return "Revise{" + "revise_id=" + revise_id + ", reviseDate=" + revisionDate + ", reviser=" + eventManager + ", event=" + event + '}';
     }
 
     

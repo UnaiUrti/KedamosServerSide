@@ -3,17 +3,22 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que representa al usuario que es un cliente. 
  * @author Steven Arce
  */
 @Entity
+@DiscriminatorValue("client")
+@XmlRootElement
 public class Client extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,7 +35,7 @@ public class Client extends User implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> joinEvents; 
     
-    @OneToMany(mappedBy = "user", cascade = ALL)
+    @OneToMany(mappedBy = "client", cascade = ALL)
     private Set<Comment> myComments;
 
     public Long getAccountNumber() {
@@ -49,6 +54,7 @@ public class Client extends User implements Serializable {
         this.isPremium = isPremium;
     }
 
+    @XmlTransient
     public Set<Event> getMyEvents() {
         return myEvents;
     }
@@ -57,6 +63,7 @@ public class Client extends User implements Serializable {
         this.myEvents = myEvents;
     }
 
+    @XmlTransient
     public Set<Event> getJoinEvents() {
         return joinEvents;
     }
@@ -65,6 +72,7 @@ public class Client extends User implements Serializable {
         this.joinEvents = joinEvents;
     }
 
+    @XmlTransient
     public Set<Comment> getMyComments() {
         return myComments;
     }

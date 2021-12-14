@@ -16,27 +16,37 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Comment_id implements Serializable {
 //Atributos
- /**
- * Atributos
- */
-private Long client_id;
-private Long event_id;
-/**
- * Hashcode
- * @return int
- */
+
+    /**
+     * Atributos
+     */
+    private Long userId;
+    private Long eventId;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 13 * hash + Objects.hashCode(this.client_id);
-        hash = 13 * hash + Objects.hashCode(this.event_id);
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.userId);
+        hash = 17 * hash + Objects.hashCode(this.eventId);
         return hash;
     }
-/**
- * Equals
- * @param obj
- * @return boolean
- */
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -49,50 +59,15 @@ private Long event_id;
             return false;
         }
         final Comment_id other = (Comment_id) obj;
-        if (!Objects.equals(this.client_id, other.client_id)) {
+        if (!Objects.equals(this.userId, other.userId)) {
             return false;
         }
-        return Objects.equals(this.event_id, other.event_id);
+        if (!Objects.equals(this.eventId, other.eventId)) {
+            return false;
+        }
+        return true;
     }
-/**
- * ToString
- * @return String
- */
-    @Override
-    public String toString() {
-        return "Comment_id{" + "client_id=" + client_id + ", event_id=" + event_id + '}';
-    }
-
-    /**
-     *Get cliet_id
-     * @return Long
-     */
-    public Long getClient_id() {
-        return client_id;
-    }
-
-    /**
-     *Set client_id
-     * @param client_id
-     */
-    public void setClient_id(Long client_id) {
-        this.client_id = client_id;
-    }
-
-    /**
-     *get event_id
-     * @return Long
-     */
-    public Long getEvent_id() {
-        return event_id;
-    }
-
-    /**
-     *Set event_id
-     * @param event_id
-     */
-    public void setEvent_id(Long event_id) {
-        this.event_id = event_id;
-    }
+    
+    
 
 }

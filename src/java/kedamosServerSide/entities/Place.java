@@ -6,7 +6,7 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table (name="place", schema="kedamosdb")
+@XmlRootElement
 public class Place implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,7 +69,7 @@ public class Place implements Serializable {
      * renovado
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp dateRenewal;
+    private Date dateRenewal;
     
     /**
      * Atributo de una lista de eventos
@@ -144,7 +146,7 @@ public class Place implements Serializable {
      * Get de la fecha de renovacion
      * @return devuelve la fecha de renovacion
      */
-    public Timestamp getDateRenewal() {
+    public Date getDateRenewal() {
         return dateRenewal;
     }
 
@@ -152,7 +154,7 @@ public class Place implements Serializable {
      * Set de la fecha de renovacion
      * @param dateRenewal 
      */
-    public void setDateRenewal(Timestamp dateRenewal) {
+    public void setDateRenewal(Date dateRenewal) {
         this.dateRenewal = dateRenewal;
     }
 

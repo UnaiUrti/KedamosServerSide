@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
  * @author UnaiUrtiaga
  */
 @Embeddable
-class ReviseId implements Serializable{
+public class ReviseId implements Serializable{
     
     /**
      * Id del usuario que ha revisado el evento

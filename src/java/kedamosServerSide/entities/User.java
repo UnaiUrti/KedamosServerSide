@@ -1,9 +1,10 @@
 package kedamosServerSide.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,14 +16,17 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad que representa a todos los usuarios.
  * @author Steven Arce
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="user_type")
 @Table(name = "user", schema = "kedamosdb")
+@XmlRootElement
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,7 +38,7 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus status; 
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp lastPasswordChange;  
+    private Date lastPasswordChange;  
     @Column(unique = true)
     private String email;
     private String username;
@@ -66,11 +70,11 @@ public class User implements Serializable {
         this.status = status;
     }
 
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
