@@ -179,7 +179,6 @@ public class Event implements Serializable {
         this.client = client;
     }
 
-
     @XmlTransient
     public Set<Comment> getComment() {
         return comment;
