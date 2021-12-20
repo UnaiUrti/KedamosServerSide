@@ -15,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -27,6 +29,15 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entidad Place la que va a contener los sitios en los que se van a hacer los eventos
  * @author UnaiUrtiaga
  */
+@NamedQueries({
+    @NamedQuery(
+            name="getPlaceByAddress", query="SELECT p FROM Place p WHERE p.address=:address"
+    )
+    /*,
+    @NamedQuery(
+            name="getPlaceByNamePrice", query="SELECT p FROM Place p WHERE p.name=:name AND p.price=:price"
+    )*/
+})
 @Entity
 @Table (name="place", schema="kedamosdb")
 @XmlRootElement
