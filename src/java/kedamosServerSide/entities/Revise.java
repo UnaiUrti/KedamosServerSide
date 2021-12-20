@@ -11,6 +11,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,6 +23,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Entidad revisar que se crea con la relacion de EventManager y Event
  * @author UnaiUrtiaga
  */
+@NamedQueries({
+    @NamedQuery(
+            name="getRevisionByMail", query="SELECT r FROM Revise r WHERE r.event.event_id=:event_id AND r.eventManager.email=:email"
+    )
+    ,/*           EN PROCESO PERO NO OBLIGATORIO
+    @NamedQuery(
+            name="getRevisionByUsername", query="SELECT r FROM Revise r WHERE r.event.event_id=:event_id AND r.eventManager.username=:username"
+    )*/
+    @NamedQuery(
+            name="getEveryEventRevisions", query="SELECT r FROM Revise r WHERE r.event.event_id=:event_id"
+    )
+    ,
+    @NamedQuery(
+            name="getEveryUserRevisions", query="SELECT r FROM Revise r WHERE r.eventManager.email=:email"
+    )    
+})
 @Entity
 @Table (name="revise", schema="kedamosdb")
 @XmlRootElement
