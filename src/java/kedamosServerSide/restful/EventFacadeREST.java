@@ -22,12 +22,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import kedamosServerSide.entities.Category;
 import kedamosServerSide.entities.Comment;
 import kedamosServerSide.entities.Event;
 
 /**
  *
- * @author Adrian Franco
+ * @author Adrian Franco, Irkus de la Fuente
  */
 @Stateless
 @Path("kedamosserverside.entities.event")
@@ -115,12 +116,12 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     }
     
     @GET
-    @Path("place_place_id/{place_place_id}")
+    @Path("place_id/{place_id}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Event> searchEventByPlace (@PathParam("place_place_id") Integer place){
+    public List<Event> searchEventByPlace (@PathParam("place_id") Long place){
         List <Event> event = null;
         try{
-            event = em.createNamedQuery("searchEventByPlace").setParameter("place_place_id", place).getResultList();
+            event = em.createNamedQuery("searchEventByPlace").setParameter("place_id", place).getResultList();
         }catch(Exception e){
             
         }
@@ -130,13 +131,11 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @GET
     @Path("category/{category}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Event> searchEventByCategory (@PathParam("category") String category){
-        List <Event> event = null;
-        try{
-            event = em.createNamedQuery("searchEventByCategory").setParameter("category", category).getResultList();
-        }catch(Exception e){
-            
-        }
+    public Set<Event> searchEventByCategory (@PathParam("category") Category category){
+        Set <Event> event = null;
+    
+            event = new HashSet(em.createNamedQuery("searchEventByCategory").setParameter("category", category).getResultList());
+   
         return event;
     }
     
@@ -160,7 +159,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
         has = new HashSet<>(em.createNamedQuery("findByEvent").setParameter("event", event_id).getResultList());
 
         return has;
-
+     
     }
     @Override
     protected EntityManager getEntityManager() {

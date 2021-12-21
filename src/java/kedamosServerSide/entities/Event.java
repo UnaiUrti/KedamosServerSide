@@ -8,10 +8,10 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,12 +42,16 @@ import javax.xml.bind.annotation.XmlTransient;
     )
     ,
         @NamedQuery(
-            name = "searchEventByPlace", query = "SELECT e FROM Event e WHERE e.place=:place ORDER BY e.date ASC"
+            name = "searchEventByPlace", query = "SELECT e FROM Event e WHERE e.place.place_id=:place_id ORDER BY e.date ASC"
     )
     ,
         @NamedQuery(
-            name = "searchEventByCategory", query = "SELECT e FROM Event e WHERE e.category=:category ORDER BY e.date ASC "
+            name = "searchEventByCategory", query = "SELECT e FROM Event e WHERE e.category=:category"
     )
+    ,
+    @NamedQuery(name = "findByEvent", query = "SELECT c FROM Comment c WHERE c.event.event_id=:event"),
+    @NamedQuery(name = "findById", query = "SELECT c FROM Comment c  WHERE c.event.event_id=:event and c.client.user_id=:client")
+
 })
 @Entity
 @Table(name = "event", schema = "kedamosdb")
@@ -106,24 +110,24 @@ public class Event implements Serializable {
     /**
      * Lista de Clientes apuntados al Evento
      */
-    @ManyToMany(mappedBy = "joinEvents", cascade = ALL)
+    @ManyToMany(mappedBy = "joinEvents", fetch = FetchType.EAGER)
     private Set<Client> client;
 
     /**
      * Lista de comentarios de los usuarios sonbre el Evento
      */
-    @OneToMany(mappedBy = "event", cascade = ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private Set<Comment> comment;
 
     /**
      * Personal necesario para el evento
      */
-    @OneToMany(mappedBy = "event", cascade = ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private Set<PersonalResource> personalResource;
     /**
      *
      */
-    @OneToMany(mappedBy = "event", cascade = ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private Set<Revise> eventRevisions;
     /**
      * Lugar en el que se hace el evento
@@ -257,7 +261,7 @@ public class Event implements Serializable {
         return event_id;
     }
 
-    public void setEvent_id(Long id) {
+    public void setEvent_id(Long event_id) {
         this.event_id = event_id;
     }
 
