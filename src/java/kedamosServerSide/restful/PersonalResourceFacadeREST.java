@@ -5,7 +5,11 @@
  */
 package kedamosServerSide.restful;
 
+
+import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import kedamosServerSide.entities.Event;
 import kedamosServerSide.entities.PersonalResource;
 import kedamosServerSide.entities.Type;
 import kedamosServerSide.exceptions.ListException;
@@ -40,10 +45,16 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     }
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(PersonalResource entity) {
+        //compruebo que el evento esta en el contexto de persistencia si no lo meto con el merge
+       if(!em.contains(entity.getEvent()))
+            em.merge(entity.getEvent());
+        
+       
+        em.flush();
         super.create(entity);
+       
     }
 
     @PUT
@@ -88,18 +99,46 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     }
     
     @GET
-    @Path("event/{event_id}/{type}")
+    @Path("EventBypersonalType/{type}")
     @Produces({MediaType.APPLICATION_XML})
-    public PersonalResource findPersonalByType(@PathParam("event_id") Long event_id,@PathParam("type")Type type) {
-        PersonalResource per=new PersonalResource();
+    public Set<PersonalResource> findPersonalByType(@PathParam("type")Type type) {
+       Set<PersonalResource> per=null;
         try{
-            per= (PersonalResource) em.createNamedQuery("findPersonalByType").setParameter("event", event_id).setParameter("type", type).getSingleResult();
+             per=new HashSet( em.createNamedQuery("findPersonalByType").setParameter("type", type).getResultList());
         }catch(Exception e){
             logger.severe("Error en listar por  list exception");
             //throw new ListException("Error al listar el personal por tipo");
         }
             return per;
 }
+     @GET
+    @Path("FindByPRice/{price}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<PersonalResource> findPersonalByPrice(@PathParam("price")Float price) {
+       Set<PersonalResource> per=null;
+        try{
+             per=new HashSet( em.createNamedQuery("findPersonalByType").setParameter("price", price).getResultList());
+        }catch(Exception e){
+            logger.severe("Error en listar por  list exception");
+            //throw new ListException("Error al listar el personal por tipo");
+        }
+            return per;
+}
+       @GET
+    @Path("BYIDANDTYPE/{event_id}/{type}")
+    @Produces({MediaType.APPLICATION_XML})
+    public PersonalResource findPersonalByEventAndType(@PathParam("type")Type type,@PathParam("event")Long event_id) {
+       PersonalResource per=null;
+      
+             per=(PersonalResource) em.createNamedQuery("findPersonalByEventAndType").setParameter("type", type).setParameter("event", event_id).getSingleResult();
+        
+            return per;
+}
+     @DELETE
+    @Path("DeleteByType/{type}")
+    public void deletePersonalByType(@PathParam("type") Type type) {
+       em.createNamedQuery("deletePersonalByType").setParameter("type", type).executeUpdate();
+    }
     @Override
     protected EntityManager getEntityManager() {
         return em;
