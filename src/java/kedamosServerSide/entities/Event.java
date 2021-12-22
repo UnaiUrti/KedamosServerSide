@@ -8,6 +8,7 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -92,7 +93,7 @@ public class Event implements Serializable {
      * Booleano para saber si el manager del evento ha dado el OK o ha borrado
      * el Evento
      */
-    private Boolean isRevised;
+    private Boolean isAccepted;
 
     /**
      * Enumeracion de todas las categorias que puede seleccionar el Cliente al
@@ -110,25 +111,42 @@ public class Event implements Serializable {
     /**
      * Lista de Clientes apuntados al Evento
      */
-    @ManyToMany(mappedBy = "joinEvents", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "joinEvents", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Client> client;
 
     /**
      * Lista de comentarios de los usuarios sonbre el Evento
      */
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Comment> comment;
 
     /**
      * Personal necesario para el evento
      */
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<PersonalResource> personalResource;
     /**
      *
      */
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Revise> eventRevisions;
+
+    public Boolean getIsAccepted() {
+        return isAccepted;
+    }
+
+    public void setIsAccepted(Boolean isAccepted) {
+        this.isAccepted = isAccepted;
+    }
+    
+    @XmlTransient
+    public Set<Revise> getEventRevisions() {
+        return eventRevisions;
+    }
+
+    public void setEventRevisions(Set<Revise> eventRevisions) {
+        this.eventRevisions = eventRevisions;
+    }
     /**
      * Lugar en el que se hace el evento
      */
@@ -189,14 +207,6 @@ public class Event implements Serializable {
         this.price = price;
     }
 
-    public Boolean getIsRevised() {
-        return isRevised;
-    }
-
-    public void setIsRevised(Boolean isRevised) {
-        this.isRevised = isRevised;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -232,7 +242,8 @@ public class Event implements Serializable {
     public void setPersonalResource(Set<PersonalResource> personalResource) {
         this.personalResource = personalResource;
     }
-
+    
+    @XmlTransient
     public Place getPlace() {
         return place;
     }
@@ -240,7 +251,8 @@ public class Event implements Serializable {
     public void setPlace(Place place) {
         this.place = place;
     }
-
+    
+    @XmlTransient
     public Client getOrganizer() {
         return organizer;
     }
@@ -297,7 +309,8 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", price=" + price + ", isRevised=" + isRevised + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", place=" + place + ", organizer=" + organizer + '}';
+        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", price=" + price + ", isAccepted=" + isAccepted + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", eventRevisions=" + eventRevisions + ", place=" + place + ", organizer=" + organizer + '}';
     }
+
 
 }
