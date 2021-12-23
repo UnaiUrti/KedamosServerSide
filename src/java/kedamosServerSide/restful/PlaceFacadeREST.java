@@ -5,9 +5,7 @@
  */
 package kedamosServerSide.restful;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import kedamosServerSide.entities.Event;
 import kedamosServerSide.entities.Place;
 
 /**
@@ -32,7 +31,7 @@ public class PlaceFacadeREST extends AbstractFacade<Place> {
 
     @PersistenceContext(unitName = "KedamosServerSidePU")
     private EntityManager em;
-
+    
     public PlaceFacadeREST() {
         super(Place.class);
     }
@@ -41,7 +40,16 @@ public class PlaceFacadeREST extends AbstractFacade<Place> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Place entity) {
+        if(entity.getEvents()!=null){
+            for(Event event: entity.getEvents()){
+                if(!em.contains(event)){
+                    em.merge(event);
+                    //em.flush();
+                }
+            }
+        }
         super.create(entity);
+        
     }
 
     @PUT
@@ -63,7 +71,7 @@ public class PlaceFacadeREST extends AbstractFacade<Place> {
     public Place find(@PathParam("id") Long id) {
         return super.find(id);
     }
-
+    
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
@@ -99,18 +107,26 @@ public class PlaceFacadeREST extends AbstractFacade<Place> {
         return place;
     }
     
-    /*@GET
-    @Path("placeByName/{name}/{price}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Set<Place> getPlaceByAddress(@PathParam("name") String name, @PathParam("price") Float price){
+    @DELETE
+    @Path("deleteByAddress/{address}")
+    public void deletePlaceByAddress(@PathParam("address") String address){
         
-        Set<Place> place = null;
         try{
-            place = new HashSet<>(em.createNamedQuery("getPlaceByAddress").setParameter("name", name).setParameter("price", price).getResultList());
+            em.createNamedQuery("deletePlaceByAddress").setParameter("address", address);
         }catch(Exception e){
             
         }
-        return place;
+    }
+    
+    /*@PUT
+    @Path("updateByAddress/{address}")
+    @Consumes(MediaType.APPLICATION_XML)
+    public void updateByAddress(@PathParam("address") String address){
+        try{
+            em.createNamedQuery("updateByAddress").setParameter("address", address);
+        }catch(Exception e){
+            
+        }
     }*/
     
     @Override
