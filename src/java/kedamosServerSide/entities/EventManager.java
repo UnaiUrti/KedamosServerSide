@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Steven Arce
  */
 @Entity
-@DiscriminatorValue("event_manager")
+@DiscriminatorValue("Event_manager")
 @XmlRootElement
 public class EventManager extends User implements Serializable {
 
@@ -28,7 +28,7 @@ public class EventManager extends User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Category managerCategory;
 
-    @OneToMany(mappedBy = "eventManager", cascade = ALL)
+    @OneToMany(mappedBy = "eventManager")
     private Set<Revise> myRevisions;
 
     public Category getManagerCategory() {
@@ -39,7 +39,7 @@ public class EventManager extends User implements Serializable {
         this.managerCategory = managerCategory;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public Set<Revise> getMyRevisions() {
         return myRevisions;
     }

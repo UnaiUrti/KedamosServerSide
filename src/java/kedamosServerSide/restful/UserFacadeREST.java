@@ -28,7 +28,6 @@ import kedamosServerSide.entities.User;
 @Path("kedamosserverside.entities.user")
 public class UserFacadeREST extends AbstractFacade<User> {
 
-    //Meter logger
     @PersistenceContext(unitName = "KedamosServerSidePU")
     private EntityManager em;
 
@@ -82,11 +81,11 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
-    }  
-    
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }

@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -22,7 +23,7 @@ import kedamosServerSide.entities.Client;
 
 /**
  *
- * @author 2dam
+ * @author Steven Arce
  */
 @Stateless
 @Path("kedamosserverside.entities.client")
@@ -83,25 +84,26 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("getClientByEmail/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Client getClientByEmail(@PathParam("email") String email) {
+        Client client;
+        
+        client = (Client) em.createNamedQuery("getClientByEmail")
+                .setParameter("email", email)
+                .getSingleResult();
+        /*
+        if (client == null) {
+            throw new NotFoundException();
+        }
+        */
+        return client;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
-    @GET
-    @Path("email/{email}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Client getClientByEmail(@PathParam("email") String email) {
-
-        Client client = null;
-        try {
-            client = (Client) em.createNamedQuery("getClientByEmail")
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (Exception e) {
-
-        }
-        return client;
-    }
-
+    
 }

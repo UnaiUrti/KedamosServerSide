@@ -5,9 +5,7 @@
  */
 package kedamosServerSide.restful;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,12 +18,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import kedamosServerSide.entities.Event;
 import kedamosServerSide.entities.EventManager;
 
 /**
  *
- * @author 2dam
+ * @author Steven Arce
  */
 @Stateless
 @Path("kedamosserverside.entities.eventmanager")
@@ -90,4 +87,5 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    
 }
