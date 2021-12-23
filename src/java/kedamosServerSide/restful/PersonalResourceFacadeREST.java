@@ -6,7 +6,6 @@
 package kedamosServerSide.restful;
 
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,10 +22,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import kedamosServerSide.entities.Event;
 import kedamosServerSide.entities.PersonalResource;
 import kedamosServerSide.entities.Type;
-import kedamosServerSide.exceptions.ListException;
 
 /**
  *
@@ -138,6 +135,20 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     @Path("DeleteByType/{type}")
     public void deletePersonalByType(@PathParam("type") Type type) {
        em.createNamedQuery("deletePersonalByType").setParameter("type", type).executeUpdate();
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML})
+    @Path("UpdateQuantity/{personalresource_id}/{quantity}")
+    public void updateQuantityOfAPErsonal(@PathParam("quantity") Long quantity,@PathParam("personalresource_id") Long personalresource_id) {
+        PersonalResource per=null;
+        
+        per=(PersonalResource)em.createNamedQuery("updateQuantityOfAPErsonal").setParameter("personalresource_id", personalresource_id).getSingleResult();
+        per.setQuantity(quantity);
+        if(!em.contains(per))
+            em.merge(per);
+        em.flush();
+            
     }
     @Override
     protected EntityManager getEntityManager() {

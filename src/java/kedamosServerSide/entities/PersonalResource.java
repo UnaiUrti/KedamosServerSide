@@ -27,7 +27,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(
     name="findPersonalByEventAndType",query="SELECT p FROM PersonalResource p WHERE p.type=:type AND p.event.event_id=:event"),
     @NamedQuery(
-    name="deletePersonalByType",query="DELETE  FROM PersonalResource p WHERE p.type=:type")
+    name="deletePersonalByType",query="DELETE  FROM PersonalResource p WHERE p.type=:type"),
+    @NamedQuery(
+    name="updateQuantityOfAPErsonal",query="SELECT  p FROM PersonalResource p WHERE p.personalresource_id=:personalresource_id")
 })
 
 /**
