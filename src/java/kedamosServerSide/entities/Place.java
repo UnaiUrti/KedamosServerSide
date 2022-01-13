@@ -37,10 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
     @NamedQuery(
             name="deletePlaceByAddress", query="DELETE FROM Place p WHERE p.address=:address"
-    ),
-    /*@NamedQuery(
-            name="updatePlaceByAddress", query="UPDATE Place p SET  WHERE p.address=:address"
-    )*/
+    )
 })
 @Entity
 @Table (name="place", schema="kedamosdb")
