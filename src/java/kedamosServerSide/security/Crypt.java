@@ -5,14 +5,18 @@
  */
 package kedamosServerSide.security;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -30,12 +34,12 @@ public class Crypt {
     /**
      *
      * @param passwd
-     * @return 
+     * @return
      */
     public byte[] encrypt(String passwd) {
 
         byte[] encodedMessage = null;
-        
+
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             //
@@ -55,13 +59,13 @@ public class Crypt {
         }
 
         return encodedMessage;
-  
+
     }
 
     public byte[] decrypt(byte[] passwd) {
 
         byte[] encodedMessage = null;
-        
+
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             //
@@ -74,8 +78,33 @@ public class Crypt {
 
         return encodedMessage;
     }
+
+    public String hash(String passwd) {
+
+        byte[] hash = null;
+        
+        try {
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            hash = md.digest(passwd.getBytes(StandardCharsets.UTF_8));
+
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return bytesToHex(hash);
+        
+    }
+   
+    public String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
     
-    
+
     public PublicKey readPublicKey() {
         PublicKey pubKey = null;
         try {
@@ -109,6 +138,5 @@ public class Crypt {
         }
         return priKey;
     }
-    
-    
+
 }
