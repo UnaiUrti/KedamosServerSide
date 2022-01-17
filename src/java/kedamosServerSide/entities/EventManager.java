@@ -40,6 +40,7 @@ public class EventManager extends User implements Serializable {
     }
 
     //@XmlTransient
+    @XmlTransient
     public Set<Revise> getMyRevisions() {
         return myRevisions;
     }

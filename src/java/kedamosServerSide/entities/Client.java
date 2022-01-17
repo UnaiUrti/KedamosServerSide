@@ -23,11 +23,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Steven Arce
  */
-@NamedQueries({
-    @NamedQuery(
-            name = "getClientByEmail", query = "SELECT c FROM Client c WHERE c.email = :email"
-    )
-})
 @Entity
 @DiscriminatorValue("Client")
 @XmlRootElement
@@ -43,7 +38,7 @@ public class Client extends User implements Serializable {
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(name = "user_event", schema = "kedamosdb",
-            joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "user_id"),
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "event_id"))
     private Set<Event> joinEvents;
 
@@ -67,6 +62,7 @@ public class Client extends User implements Serializable {
     }
     
     //@XmlTransient
+    @XmlTransient
     public Set<Event> getMyEvents() {
         return myEvents;
     }
@@ -76,6 +72,7 @@ public class Client extends User implements Serializable {
     }
     
     //@XmlTransient
+    @XmlTransient
     public Set<Event> getJoinEvents() {
         return joinEvents;
     }
@@ -85,6 +82,7 @@ public class Client extends User implements Serializable {
     }
     
     //@XmlTransient
+    @XmlTransient
     public Set<Comment> getMyComments() {
         return myComments;
     }

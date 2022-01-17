@@ -12,13 +12,18 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import kedamosServerSide.entities.Client;
+import kedamosServerSide.entities.EventManager;
 import kedamosServerSide.entities.User;
+import kedamosServerSide.security.Crypt;
 
 /**
  *
@@ -83,9 +88,47 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("getUserByUsername/{username}/passwd")
+    @Produces({MediaType.APPLICATION_XML})
+    public User getUserByUsername(@PathParam("username") String username,
+            @PathParam("passwd") String passwd) {
+        User user;
+
+        user = (User) em.createNamedQuery("getUserByUsername")
+                .setParameter("username", username)
+                .getSingleResult();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            if (user instanceof Client) {
+                user = (Client) user;
+            }
+            if (user instanceof EventManager) {
+                user = (EventManager) user;
+            }
+        }
+        return user;
+    }
+
+    @GET
+    @Path("getUserByEmail/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User getUserByEmail(@PathParam("email") String email) {
+        User user;
+
+        user = (User) em.createNamedQuery("getUserByEmail")
+                .setParameter("email", email)
+                .getSingleResult();
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return user;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
