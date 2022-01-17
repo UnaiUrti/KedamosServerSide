@@ -24,9 +24,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kedamosServerSide.entities.PersonalResource;
 import kedamosServerSide.entities.Type;
+import kedamosServerSide.exceptions.ListException;
+import kedamosServerSide.exceptions.PersonalDontExistException;
 
 /**
- *
+ *Esta clase maneja los personales asignados a un evento
  * @author Irkus de la Fuente
  */
 
@@ -94,55 +96,85 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     public String countREST() {
         return String.valueOf(super.count());
     }
-    
+    /**
+     * Buscar todos los personales de un tipo en especifico
+     * @param type
+     * @return
+     * @throws ListException 
+     */
     @GET
     @Path("EventBypersonalType/{type}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<PersonalResource> findPersonalByType(@PathParam("type")Type type) {
+    public Set<PersonalResource> findPersonalByType(@PathParam("type")Type type) throws ListException {
        Set<PersonalResource> per=null;
-        try{
+        
              per=new HashSet( em.createNamedQuery("findPersonalByType").setParameter("type", type).getResultList());
-        }catch(Exception e){
+        if(per.isEmpty()){
             logger.severe("Error en listar por  list exception");
-            //throw new ListException("Error al listar el personal por tipo");
+            throw new ListException("Error al listar el personal por tipo");
         }
             return per;
 }
+    /**
+     * Buscar los personales de un precio en especifico
+     * @param price
+     * @return
+     * @throws ListException 
+     */
      @GET
     @Path("FindByPRice/{price}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<PersonalResource> findPersonalByPrice(@PathParam("price")Float price) {
+    public Set<PersonalResource> findPersonalByPrice(@PathParam("price")Float price) throws ListException{
        Set<PersonalResource> per=null;
-        try{
+        
              per=new HashSet( em.createNamedQuery("findPersonalByType").setParameter("price", price).getResultList());
-        }catch(Exception e){
+        if(per.isEmpty()){
             logger.severe("Error en listar por  list exception");
-            //throw new ListException("Error al listar el personal por tipo");
+            throw new ListException("Tipo no existe");
         }
             return per;
 }
+    /**
+     * Buscar un personal de un evento en concreto mediante el tipo
+     * @param type
+     * @param event_id
+     * @return
+     * @throws PersonalDontExistException 
+     */
        @GET
     @Path("BYIDANDTYPE/{event_id}/{type}")
     @Produces({MediaType.APPLICATION_XML})
-    public PersonalResource findPersonalByEventAndType(@PathParam("type")Type type,@PathParam("event")Long event_id) {
+    public PersonalResource findPersonalByEventAndType(@PathParam("type")Type type,@PathParam("event")Long event_id) throws PersonalDontExistException {
        PersonalResource per=null;
       
              per=(PersonalResource) em.createNamedQuery("findPersonalByEventAndType").setParameter("type", type).setParameter("event", event_id).getSingleResult();
-        
+        if(per==null){
+          throw new PersonalDontExistException("personal inecistente");  
+        }
             return per;
 }
+    /**
+     * Borrar todos los personales de un tipo
+     * @param type
+     * @throws PersonalDontExistException 
+     */
      @DELETE
     @Path("DeleteByType/{type}")
-    public void deletePersonalByType(@PathParam("type") Type type) {
-       em.createNamedQuery("deletePersonalByType").setParameter("type", type).executeUpdate();
-    }
+    public void deletePersonalByType(@PathParam("type") Type type) throws PersonalDontExistException {
+        em.createNamedQuery("deletePersonalByType").setParameter("type", type).executeUpdate();
     
+}
+    /**
+     * Modificar la cantidad de un tipo de personal
+     * @param quantity
+     * @param personalresource_id 
+     */
     @GET
     @Produces({MediaType.APPLICATION_XML})
     @Path("UpdateQuantity/{personalresource_id}/{quantity}")
     public void updateQuantityOfAPErsonal(@PathParam("quantity") Long quantity,@PathParam("personalresource_id") Long personalresource_id) {
         PersonalResource per=null;
-        
+        //Selecciono el PersonalResource que quiere el cliente y le modifico quantity con el setter
         per=(PersonalResource)em.createNamedQuery("updateQuantityOfAPErsonal").setParameter("personalresource_id", personalresource_id).getSingleResult();
         per.setQuantity(quantity);
         if(!em.contains(per))
