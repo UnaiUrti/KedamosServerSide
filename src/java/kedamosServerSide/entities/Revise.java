@@ -53,6 +53,12 @@ public class Revise implements Serializable {
     private ReviseId revise_id;
     
     /**
+     * Atributo booleano que indica si el evento ha sido aceptado o no
+     */
+    @NotNull
+    private Boolean isAccepted;
+    
+    /**
      * Atributo tipo fecha que guarda cuando ha sido revisado el evento
      */
     @NotNull
@@ -175,7 +181,7 @@ public class Revise implements Serializable {
      */
     @Override
     public String toString() {
-        return "Revise{" + "revise_id=" + revise_id + ", reviseDate=" + revisionDate + ", reviser=" + eventManager + ", event=" + event + '}';
+        return "Revise{" + "revise_id=" + revise_id + ", isAccepted=" + isAccepted + ", reviseDate=" + revisionDate + ", reviser=" + eventManager + ", event=" + event + '}';
     }
 
     
