@@ -89,12 +89,7 @@ public class Event implements Serializable {
      * Coste de unirse a un evento en concreto
      */
     private Float price;
-    /**
-     * Booleano para saber si el manager del evento ha dado el OK o ha borrado
-     * el Evento
-     */
-    private Boolean isAccepted;
-
+    
     /**
      * Enumeracion de todas las categorias que puede seleccionar el Cliente al
      * crear Eventos
@@ -131,14 +126,7 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Revise> eventRevisions;
 
-    public Boolean getIsAccepted() {
-        return isAccepted;
-    }
 
-    public void setIsAccepted(Boolean isAccepted) {
-        this.isAccepted = isAccepted;
-    }
-    
     @XmlTransient
     public Set<Revise> getEventRevisions() {
         return eventRevisions;
@@ -309,7 +297,7 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", price=" + price + ", isAccepted=" + isAccepted + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", eventRevisions=" + eventRevisions + ", place=" + place + ", organizer=" + organizer + '}';
+        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", price=" + price + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", eventRevisions=" + eventRevisions + ", place=" + place + ", organizer=" + organizer + '}';
     }
 
 
