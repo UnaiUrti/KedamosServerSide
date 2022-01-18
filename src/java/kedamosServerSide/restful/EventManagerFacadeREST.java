@@ -19,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import kedamosServerSide.entities.EventManager;
+import kedamosServerSide.security.Crypt;
 
 /**
  *
@@ -39,6 +40,8 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(EventManager entity) {
+        Crypt crypt = new Crypt();
+        entity.setPassword(crypt.hash(entity.getPassword()));
         super.create(entity);
     }
 
