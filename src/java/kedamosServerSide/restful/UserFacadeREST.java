@@ -93,6 +93,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public User getUserByUsername(@PathParam("username") String username,
             @PathParam("passwd") String passwd) {
+        Crypt crypt = new Crypt();
         User user;
 
         user = (User) em.createNamedQuery("getUserByUsername")
@@ -103,9 +104,15 @@ public class UserFacadeREST extends AbstractFacade<User> {
         } else {
             if (user instanceof Client) {
                 user = (Client) user;
+                if (!user.getPassword().equalsIgnoreCase(crypt.hash(passwd))) {
+                    throw new NotAuthorizedException("Las contraseñas no coinciden");
+                }
             }
             if (user instanceof EventManager) {
                 user = (EventManager) user;
+                if (!user.getPassword().equalsIgnoreCase(crypt.hash(passwd))) {
+                    throw new NotAuthorizedException("Las contraseñas no coinciden");
+                }
             }
         }
         return user;
