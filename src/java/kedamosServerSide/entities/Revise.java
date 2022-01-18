@@ -85,22 +85,6 @@ public class Revise implements Serializable {
     private Event event;
 
     /**
-     * Get de los IDs de la revision
-     * @return Devuelve la clase ReviseId que contiene todos los IDs de la entidad
-     */
-    public ReviseId getId() {
-        return revise_id;
-    }
-
-    /**
-     * Set de los IDs de la revision
-     * @param id 
-     */
-    public void setId(Long id) {
-        this.revise_id = revise_id;
-    }
-
-    /**
      * Get de la fecha de revision
      * @return Devuelve la fecha de la revision
      */
