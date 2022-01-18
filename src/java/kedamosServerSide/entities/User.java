@@ -25,16 +25,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Entidad que representa a todos los usuarios.
  * @author Steven Arce
  */
-/*
 @NamedQueries({
     @NamedQuery(
             name = "getUserByUsername", query = "SELECT u FROM User u WHERE u.username = :username"
     ),
     @NamedQuery(
-            name = "", query = ""
+            name = "getUserByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
     ),
 })
-*/
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type", discriminatorType = DiscriminatorType.STRING)
