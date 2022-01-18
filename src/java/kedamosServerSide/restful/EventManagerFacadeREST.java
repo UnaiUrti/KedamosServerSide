@@ -22,7 +22,7 @@ import kedamosServerSide.entities.EventManager;
 
 /**
  *
- * @author Freak
+ * @author Steven Arce
  */
 @Stateless
 @Path("kedamosserverside.entities.eventmanager")

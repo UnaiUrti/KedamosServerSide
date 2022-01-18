@@ -27,7 +27,7 @@ import kedamosServerSide.security.Crypt;
 
 /**
  *
- * @author 2dam
+ * @author Steven Arce
  */
 @Stateless
 @Path("kedamosserverside.entities.user")

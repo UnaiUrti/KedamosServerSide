@@ -22,7 +22,7 @@ import kedamosServerSide.entities.Client;
 
 /**
  *
- * @author Freak
+ * @author Steven Arce
  */
 @Stateless
 @Path("kedamosserverside.entities.client")

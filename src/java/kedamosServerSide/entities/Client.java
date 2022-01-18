@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que representa al usuario que es un cliente.
- *
  * @author Steven Arce
  */
 @Entity

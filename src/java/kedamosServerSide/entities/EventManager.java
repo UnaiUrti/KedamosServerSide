@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que representa al usuario que administra los eventos.
- *
  * @author Steven Arce
  */
 @Entity
