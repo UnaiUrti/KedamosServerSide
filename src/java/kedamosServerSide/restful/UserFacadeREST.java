@@ -133,6 +133,28 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return user;
     }
 
+    @GET
+    @Path("resetPasswordByEmail/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User resetPasswordByEmail(@PathParam("email") String email) {
+        User user;
+
+        user = (User) em.createNamedQuery("resetPasswordByEmail")
+                .setParameter("email", email)
+                .getSingleResult();
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            /**
+             * Genererar una nueva contraseña
+             * user.setPassword(nuevaContraseñaGenerada);
+             * Hasheamos la onctraseña
+             * Se lo enviamos por email
+             */
+        }
+        return user;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

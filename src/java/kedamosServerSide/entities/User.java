@@ -32,6 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(
             name = "getUserByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
     ),
+    @NamedQuery(
+            name = "resetPasswordByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
+    )
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
