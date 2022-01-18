@@ -84,6 +84,24 @@ public class Revise implements Serializable {
     @ManyToOne
     private Event event;
 
+    public Boolean getIsAccepted() {
+        return isAccepted;
+    }
+
+    public void setIsAccepted(Boolean isAccepted) {
+        this.isAccepted = isAccepted;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    
+    
     /**
      * Get de la fecha de revision
      * @return Devuelve la fecha de la revision
