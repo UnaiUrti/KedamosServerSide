@@ -17,6 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -104,7 +105,28 @@ public class Crypt {
         return sb.toString();
     }
     
+    public String generatePassword() {
+        
+        int length = 16;
+        String symbol = ".*_"; 
+        String cap_letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+        String small_letter = "abcdefghijklmnopqrstuvwxyz"; 
+        String numbers = "0123456789"; 
+        
+        String finalString = cap_letter + small_letter + numbers + symbol; 
 
+        Random random = new Random(); 
+
+        char[] password = new char[length]; 
+
+        for (int i = 0; i < length; i++) { 
+            password[i] = finalString.charAt(random.nextInt(finalString.length())); 
+        } 
+        
+        return String.valueOf(password);
+        
+    }
+    
     public PublicKey readPublicKey() {
         PublicKey pubKey = null;
         try {
