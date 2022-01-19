@@ -26,21 +26,19 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import static kedamosServerSide.security.KeyGenerator.fileReader;
 
 /**
  *
- * @author 2dam
+ * @author Unai Urtiaga
  */
 public class Email {
     
-    public void sendEmail(String receiver){
+    public static void sendEmail(String receiver, String newPasswd){
         
         try {
-            String subject = "Correo de ejemplo bb";
-            String text = "Texto de ejemplo";
+            String subject = "Password Changed";
+            String text = "Your new password is: " + newPasswd;
             ResourceBundle configFile;
-            Crypt crypt = new Crypt();
             
             //Propiedades del Mail
             configFile = ResourceBundle.getBundle("kedamosServerSide.security.EmailProperties");
@@ -57,7 +55,7 @@ public class Email {
                 
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(configFile.getString("sender"), crypt.decryptSimetric());
+                    return new PasswordAuthentication(configFile.getString("sender"), Crypt.decryptSimetric());
                 }
             });
             
