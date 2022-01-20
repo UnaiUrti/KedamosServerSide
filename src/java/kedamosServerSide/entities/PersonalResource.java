@@ -11,10 +11,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+@NamedQueries({
+@NamedQuery(
+    name="findPersonalByType",query="SELECT a FROM PersonalResource a WHERE  a.type=:type"
+     
+),
+    @NamedQuery(
+   name="findPersonalByPrice",query="SELECT p FROM PersonalResource p WHERE p.price=:price"),
+    @NamedQuery(
+    name="findPersonalByEventAndType",query="SELECT p FROM PersonalResource p WHERE p.type=:type AND p.event.event_id=:event"),
+    @NamedQuery(
+    name="deletePersonalByType",query="DELETE  FROM PersonalResource p WHERE p.type=:type"),
+    @NamedQuery(
+    name="updateQuantityOfAPErsonal",query="SELECT  p FROM PersonalResource p WHERE p.personalresource_id=:personalresource_id"),
+    @NamedQuery(
+    name="getPersonalByEvent",query="SELECT  p FROM PersonalResource p WHERE p.event.event_id=:event_id"),
+})
 
 /**
  *Entidad PersonalResource 
@@ -145,6 +163,7 @@ public class PersonalResource implements Serializable {
  * Get del campo relacional
  * @return event
  */
+     //@XmlTransient
     public Event getEvent() {
         return event;
     }
@@ -159,7 +178,7 @@ public class PersonalResource implements Serializable {
  * Set del id
  * @param id 
  */
-    public void setPersonalresource_id(Long id) {
+    public void setPersonalresource_id(Long personalresource_id) {
         this.personalresource_id = personalresource_id;
     }
     //HashCode
