@@ -24,6 +24,7 @@ import kedamosServerSide.entities.Client;
 import kedamosServerSide.entities.EventManager;
 import kedamosServerSide.entities.User;
 import kedamosServerSide.security.Crypt;
+import kedamosServerSide.security.Email;
 
 /**
  *
@@ -88,12 +89,12 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return String.valueOf(super.count());
     }
 
+    /*
     @GET
-    @Path("getUserByUsername/{username}/passwd")
+    @Path("validateLogin/{username}/{passwd}")
     @Produces({MediaType.APPLICATION_XML})
-    public User getUserByUsername(@PathParam("username") String username,
+    public User validateLogin(@PathParam("username") String username,
             @PathParam("passwd") String passwd) {
-        Crypt crypt = new Crypt();
         User user;
 
         user = (User) em.createNamedQuery("getUserByUsername")
@@ -104,13 +105,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
         } else {
             if (user instanceof Client) {
                 user = (Client) user;
-                if (!user.getPassword().equalsIgnoreCase(crypt.hash(passwd))) {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
                     throw new NotAuthorizedException("Las contraseñas no coinciden");
                 }
             }
             if (user instanceof EventManager) {
                 user = (EventManager) user;
-                if (!user.getPassword().equalsIgnoreCase(crypt.hash(passwd))) {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
                     throw new NotAuthorizedException("Las contraseñas no coinciden");
                 }
             }
@@ -119,20 +120,29 @@ public class UserFacadeREST extends AbstractFacade<User> {
     }
 
     @GET
-    @Path("getUserByEmail/{email}")
+    @Path("validateSignUpEmail/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public User getUserByEmail(@PathParam("email") String email) {
+    public User validateSignUp(@PathParam("email") String email) {
         User user;
 
-        user = (User) em.createNamedQuery("getUserByEmail")
+        user = (User) em.createNamedQuery("validateSignUpEmail")
                 .setParameter("email", email)
                 .getSingleResult();
-        if (user == null) {
-            throw new NotFoundException();
-        }
         return user;
     }
 
+    @GET
+    @Path("validateSignUpUsername/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User validateSignUpUsername(@PathParam("username") String username) {
+        User user;
+
+        user = (User) em.createNamedQuery("validateSignUpEmail")
+                .setParameter("username", username)
+                .getSingleResult();
+        return user;
+    }
+     */
     @GET
     @Path("resetPasswordByEmail/{email}")
     @Produces({MediaType.APPLICATION_XML})
@@ -145,16 +155,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
         if (user == null) {
             throw new NotFoundException();
         } else {
-            /**
-             * Genererar una nueva contraseña
-             * user.setPassword(nuevaContraseñaGenerada);
-             * Hasheamos la onctraseña
-             * Se lo enviamos por email
-             */
+            String newPassword = Crypt.generatePassword();
+            user.setPassword(newPassword);
+            Email.sendEmail(email, "Encabezado", newPassword);
         }
         return user;
     }
-    
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
