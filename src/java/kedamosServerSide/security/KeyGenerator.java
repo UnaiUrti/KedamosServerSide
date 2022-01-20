@@ -14,6 +14,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static kedamosServerSide.security.Crypt.fileWriter;
 
 /**
  *
@@ -58,37 +59,5 @@ public class KeyGenerator {
         }
         
     }
-    
-    /**
-     * Escribe un fichero
-     * 
-     * @param path Path del fichero
-     * @param text Texto a escibir
-     */
-    public static void fileWriter(String path, byte[] text) {
-        try (FileOutputStream fos = new FileOutputStream(path)) {
-                fos.write(text);
-        } catch (IOException e) {
-                e.printStackTrace();
-        }
-    }
-
-    /**
-     * Retorna el contenido de un fichero
-     * 
-     * @param path Path del fichero
-     * @return El texto del fichero
-     */
-    public static byte[] fileReader(String path) {
-        byte ret[] = null;
-        File file = new File(path);
-        try {
-            ret = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-    
     
 }

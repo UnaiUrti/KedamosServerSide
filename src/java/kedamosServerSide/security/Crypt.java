@@ -5,8 +5,12 @@
  */
 package kedamosServerSide.security;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -33,8 +37,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import static kedamosServerSide.security.KeyGenerator.fileReader;
-import static kedamosServerSide.security.KeyGenerator.fileWriter;
 
 /**
  *
@@ -100,9 +102,8 @@ public class Crypt {
             
         } catch (IllegalBlockSizeException | BadPaddingException
                 | InvalidKeyException | NoSuchAlgorithmException
-                | NoSuchPaddingException | InvalidKeySpecException ex) {
-            Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidAlgorithmParameterException ex) {
+                | NoSuchPaddingException | InvalidKeySpecException | 
+                InvalidAlgorithmParameterException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -209,9 +210,7 @@ public class Crypt {
             X509EncodedKeySpec encPubKeySpec = new X509EncodedKeySpec(pubKeyBytes);
             //
             pubKey = KeyFactory.getInstance("RSA").generatePublic(encPubKeySpec);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeySpecException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
         return pubKey;
@@ -226,9 +225,7 @@ public class Crypt {
             PKCS8EncodedKeySpec encPriKeySpec = new PKCS8EncodedKeySpec(priKeyBytes);
             //
             priKey = KeyFactory.getInstance("RSA").generatePrivate(encPriKeySpec);
-        } catch (InvalidKeySpecException ex) {
-            Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
         return priKey;
@@ -241,4 +238,35 @@ public class Crypt {
         return ret;
     }
 
+    /**
+     * Escribe un fichero
+     * 
+     * @param path Path del fichero
+     * @param text Texto a escibir
+     */
+    public static void fileWriter(String path, byte[] text) {
+        try (FileOutputStream fos = new FileOutputStream(path)) {
+                fos.write(text);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+    }
+
+    /**
+     * Retorna el contenido de un fichero
+     * 
+     * @param path Path del fichero
+     * @return El texto del fichero
+     */
+    public static byte[] fileReader(String path) {
+        byte ret[] = null;
+        File file = new File(path);
+        try {
+            ret = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+    
 }
