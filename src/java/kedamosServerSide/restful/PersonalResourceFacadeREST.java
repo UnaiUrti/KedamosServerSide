@@ -22,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import kedamosServerSide.entities.Event;
 import kedamosServerSide.entities.PersonalResource;
 import kedamosServerSide.entities.Type;
 import kedamosServerSide.exceptions.ListException;
@@ -182,6 +183,17 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
         em.flush();
             
     }
+    
+    @GET
+    @Path("getPersonalByEvent/{event_id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Set<PersonalResource> getPersonalByEvent(@PathParam("event_id")Long event_id)  {
+       Set<PersonalResource> per=null;
+        
+             per= new HashSet( em.createNamedQuery("getPersonalByEvent").setParameter("event_id", event_id).getResultList());
+        
+            return per;
+}
     @Override
     protected EntityManager getEntityManager() {
         return em;
