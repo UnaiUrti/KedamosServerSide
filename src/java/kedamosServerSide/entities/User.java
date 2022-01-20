@@ -26,13 +26,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Steven Arce
  */
 @NamedQueries({
-    /*
     @NamedQuery(
             name = "getUserByUsername", query = "SELECT u FROM User u WHERE u.username = :username"
     ),
-    */
     @NamedQuery(
-            name = "resetPasswordByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
+            name = "getUserByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
     )
 })
 @Entity

@@ -40,8 +40,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Client entity) {
-        Crypt crypt = new Crypt();
-        entity.setPassword(crypt.hash(entity.getPassword()));
+        entity.setPassword(Crypt.hash(entity.getPassword()));
         super.create(entity);
     }
 
@@ -78,7 +77,16 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
-
+    /*
+    @PUT
+    @Path("changePassword/{id}")
+    @Consumes({MediaType.APPLICATION_XML})
+    public void changePassword(@PathParam("id") Long id, Client entity) {
+        entity.setPassword(Crypt.decryptAsimetric(entity.getPassword().getBytes()));
+        // Falta enviar email avisando del cambio de contraseña
+        super.edit(entity);
+    }
+    */
     @Override
     protected EntityManager getEntityManager() {
         return em;

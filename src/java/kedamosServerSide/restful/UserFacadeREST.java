@@ -8,6 +8,7 @@ package kedamosServerSide.restful;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import kedamosServerSide.entities.Client;
 import kedamosServerSide.entities.EventManager;
 import kedamosServerSide.entities.User;
+import kedamosServerSide.entities.UserPrivilege;
 import kedamosServerSide.security.Crypt;
 import kedamosServerSide.security.Email;
 
@@ -89,20 +91,16 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return String.valueOf(super.count());
     }
 
-    /*
     @GET
-    @Path("validateLogin/{username}/{passwd}")
+    @Path("userLoginValidation/{username}/{passwd}")
     @Produces({MediaType.APPLICATION_XML})
-    public User validateLogin(@PathParam("username") String username,
+    public User userLoginValidation(@PathParam("username") String username,
             @PathParam("passwd") String passwd) {
-        User user;
-
-        user = (User) em.createNamedQuery("getUserByUsername")
-                .setParameter("username", username)
-                .getSingleResult();
-        if (user == null) {
-            throw new NotFoundException();
-        } else {
+        User user = null;
+        try {
+            user = (User) em.createNamedQuery("getUserByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
             if (user instanceof Client) {
                 user = (Client) user;
                 if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
@@ -115,41 +113,50 @@ public class UserFacadeREST extends AbstractFacade<User> {
                     throw new NotAuthorizedException("Las contraseñas no coinciden");
                 }
             }
+            if (user.getPrivilege() == UserPrivilege.ADMIN) {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
+                    throw new NotAuthorizedException("Las contraseñas no coinciden");
+                }
+
+            }
+        } catch (NoResultException e) {
+            throw new NotFoundException("No se ha encontrado la entidad usuario");
         }
         return user;
     }
 
     @GET
-    @Path("validateSignUpEmail/{email}")
+    @Path("isEmailExisting/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public User validateSignUp(@PathParam("email") String email) {
+    public User isEmailExisting(@PathParam("email") String email) {
         User user;
 
-        user = (User) em.createNamedQuery("validateSignUpEmail")
+        user = (User) em.createNamedQuery("getUserByEmail")
                 .setParameter("email", email)
                 .getSingleResult();
         return user;
     }
 
     @GET
-    @Path("validateSignUpUsername/{username}")
+    @Path("isUsernameExisting/{username}")
     @Produces({MediaType.APPLICATION_XML})
-    public User validateSignUpUsername(@PathParam("username") String username) {
+    public User isUsernameExisting(@PathParam("username") String username) {
         User user;
 
-        user = (User) em.createNamedQuery("validateSignUpEmail")
+        user = (User) em.createNamedQuery("getUserByUsername")
                 .setParameter("username", username)
                 .getSingleResult();
         return user;
     }
-     */
+
+    /*
     @GET
-    @Path("resetPasswordByEmail/{email}")
+    @Path("resetPassword/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public User resetPasswordByEmail(@PathParam("email") String email) {
+    public User resetPassword(@PathParam("email") String email) {
         User user;
 
-        user = (User) em.createNamedQuery("resetPasswordByEmail")
+        user = (User) em.createNamedQuery("getUserByEmail")
                 .setParameter("email", email)
                 .getSingleResult();
         if (user == null) {
@@ -161,7 +168,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
         }
         return user;
     }
-
+     */
     @Override
     protected EntityManager getEntityManager() {
         return em;

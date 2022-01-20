@@ -40,8 +40,7 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(EventManager entity) {
-        Crypt crypt = new Crypt();
-        entity.setPassword(crypt.hash(entity.getPassword()));
+        entity.setPassword(Crypt.hash(entity.getPassword()));
         super.create(entity);
     }
 
@@ -90,5 +89,5 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
