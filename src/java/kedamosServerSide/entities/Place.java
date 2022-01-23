@@ -12,9 +12,12 @@ import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -27,6 +30,15 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entidad Place la que va a contener los sitios en los que se van a hacer los eventos
  * @author UnaiUrtiaga
  */
+@NamedQueries({
+    @NamedQuery(
+            name="getPlaceByAddress", query="SELECT p FROM Place p WHERE p.address=:address"
+    )
+    ,
+    @NamedQuery(
+            name="deletePlaceByAddress", query="DELETE FROM Place p WHERE p.address=:address"
+    )
+})
 @Entity
 @Table (name="place", schema="kedamosdb")
 @XmlRootElement
@@ -39,7 +51,6 @@ public class Place implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
     private Long place_id;
     
     /**
@@ -75,8 +86,8 @@ public class Place implements Serializable {
      * Atributo de una lista de eventos
      * Aqui se van a guardar todos los eventos que se realizan en este lugar
      */
-    @OneToMany(cascade=ALL, mappedBy="place")
-    private Set<Event> event;
+    @OneToMany(fetch = EAGER, mappedBy="place")
+    private Set<Event> events;
 
     /**
      * Get del id
@@ -136,7 +147,7 @@ public class Place implements Serializable {
     
     /**
      * Set del precio
-     * @param place 
+     * @param price 
      */
     public void setPrice(Float price) {
         this.price = price;
@@ -162,17 +173,17 @@ public class Place implements Serializable {
      * Get de los eventos organizados en el lugar
      * @return devuelve una lista de eventos
      */
-    @XmlTransient
-    public Set<Event> getEvent() {
-        return event;
+    //@XmlTransient
+    public Set<Event> getEvents() {
+        return events;
     }
 
     /**
      * Set de los eventos organizados en el lugar
      * @param event 
      */
-    public void setEvent(Set<Event> event) {
-        this.event = event;
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
     
     
@@ -189,7 +200,7 @@ public class Place implements Serializable {
         hash = 73 * hash + Objects.hashCode(this.name);
         hash = 73 * hash + Objects.hashCode(this.price);
         hash = 73 * hash + Objects.hashCode(this.dateRenewal);
-        hash = 73 * hash + Objects.hashCode(this.event);
+        hash = 73 * hash + Objects.hashCode(this.events);
         return hash;
     }
 
@@ -217,7 +228,7 @@ public class Place implements Serializable {
      */
     @Override
     public String toString() {
-        return "Place{" + "place_id=" + place_id + ", address=" + address + ", name=" + name + ", price=" + price + ", dateRenewal=" + dateRenewal + ", event=" + event + '}';
+        return "Place{" + "place_id=" + place_id + ", address=" + address + ", name=" + name + ", price=" + price + ", dateRenewal=" + dateRenewal + ", event=" + events + '}';
     }
     
 }

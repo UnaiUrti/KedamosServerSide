@@ -8,15 +8,18 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -27,8 +30,30 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que contiene todos los datos relacionados con los Eventos
- * @author Adrian Franco
+ *
+ * @author Adrian Franco, Irkus de la Fuente
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "searchEventByDate", query = "SELECT e FROM Event e WHERE e.date=:date"
+    )
+    ,
+    @NamedQuery(
+            name = "searchEventByPrice", query = "SELECT e FROM Event e WHERE e.price=:price ORDER BY e.date ASC"
+    )
+    ,
+        @NamedQuery(
+            name = "searchEventByPlace", query = "SELECT e FROM Event e WHERE e.place.place_id=:place_id ORDER BY e.date ASC"
+    )
+    ,
+        @NamedQuery(
+            name = "searchEventByCategory", query = "SELECT e FROM Event e WHERE e.category=:category"
+    )
+    ,
+    @NamedQuery(name = "findByEvent", query = "SELECT c FROM Comment c WHERE c.event.event_id=:event"),
+    @NamedQuery(name = "findById", query = "SELECT c FROM Comment c  WHERE c.event.event_id=:event and c.client.user_id=:client")
+
+})
 @Entity
 @Table(name = "event", schema = "kedamosdb")
 @XmlRootElement
@@ -41,35 +66,33 @@ public class Event implements Serializable {
      * Atributo clave primaria con la que se identifican los eventos
      */
     private Long event_id;
-    
+
     /**
      * Atributo que rellena el cliente al crear un Evento para que los otros
      * usuarios vean la fecha de inicio
      */
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    
+
     /**
      * Atributos para saber cuantos clientes hay apuntados al evento, el mínimo
      * para que se realize y el máximo para apuntarse
      */
-    
     private Long maxParticipants, minParticipants, actualParticipants;
-    
+
     /**
      * Breve descripcion sobre el evento que se va a crear
      */
     private String description;
-    
-    /**
-     * Booleano para saber si el manager del evento ha dado el OK 
-     * o ha borrado el Evento
-     */
-    private Boolean isRevised;
 
     /**
-     * Enumeracion de todas las categorias que puede seleccionar el Cliente 
-     * al crear Eventos
+     * Coste de unirse a un evento en concreto
+     */
+    private Float price;
+    
+    /**
+     * Enumeracion de todas las categorias que puede seleccionar el Cliente al
+     * crear Eventos
      */
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -79,35 +102,45 @@ public class Event implements Serializable {
      */
     @NotNull
     private String title;
-    
+
     /**
      * Lista de Clientes apuntados al Evento
      */
-    @ManyToMany(mappedBy="joinEvents", cascade=ALL)
+    @ManyToMany(mappedBy = "joinEvents", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Client> client;
-    
+
     /**
      * Lista de comentarios de los usuarios sonbre el Evento
      */
-    @OneToMany(mappedBy="event",cascade=ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Comment> comment;
-    
+
     /**
      * Personal necesario para el evento
      */
-    @OneToMany (mappedBy="event",cascade=ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<PersonalResource> personalResource;
     /**
-     * 
+     *
      */
-    @OneToMany(mappedBy = "event",cascade = ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
     private Set<Revise> eventRevisions;
+
+
+    @XmlTransient
+    public Set<Revise> getEventRevisions() {
+        return eventRevisions;
+    }
+
+    public void setEventRevisions(Set<Revise> eventRevisions) {
+        this.eventRevisions = eventRevisions;
+    }
     /**
      * Lugar en el que se hace el evento
      */
     @ManyToOne
     private Place place;
-    
+
     /**
      * Atributo que define al organizador de cada evento
      */
@@ -154,12 +187,12 @@ public class Event implements Serializable {
         this.description = description;
     }
 
-    public Boolean getIsRevised() {
-        return isRevised;
+    public Float getPrice() {
+        return price;
     }
 
-    public void setIsRevised(Boolean isRevised) {
-        this.isRevised = isRevised;
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
     public Category getCategory() {
@@ -187,7 +220,8 @@ public class Event implements Serializable {
     public void setComment(Set<Comment> comment) {
         this.comment = comment;
     }
-
+    
+    //Depende de como lo queramos hacer
     @XmlTransient
     public Set<PersonalResource> getPersonalResource() {
         return personalResource;
@@ -196,7 +230,8 @@ public class Event implements Serializable {
     public void setPersonalResource(Set<PersonalResource> personalResource) {
         this.personalResource = personalResource;
     }
-
+    
+    @XmlTransient
     public Place getPlace() {
         return place;
     }
@@ -204,7 +239,8 @@ public class Event implements Serializable {
     public void setPlace(Place place) {
         this.place = place;
     }
-
+    
+    @XmlTransient
     public Client getOrganizer() {
         return organizer;
     }
@@ -212,7 +248,6 @@ public class Event implements Serializable {
     public void setOrganizer(Client organizer) {
         this.organizer = organizer;
     }
-
 
     public String getTitle() {
         return title;
@@ -226,7 +261,7 @@ public class Event implements Serializable {
         return event_id;
     }
 
-    public void setEvent_id(Long id) {
+    public void setEvent_id(Long event_id) {
         this.event_id = event_id;
     }
 
@@ -239,9 +274,11 @@ public class Event implements Serializable {
         hash += (event_id != null ? event_id.hashCode() : 0);
         return hash;
     }
+
     /**
-     * Compara la igualdad de dos objetos de evento. Este metodo considera que una
-     * cuenta es igual a otra cuando sus ids son exactamente iguales
+     * Compara la igualdad de dos objetos de evento. Este metodo considera que
+     * una cuenta es igual a otra cuando sus ids son exactamente iguales
+     *
      * @param object El otro objeto evento con el que se compara
      * @return True si las comparaciones son iguales
      */
@@ -260,9 +297,8 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", isRevised=" + isRevised + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", place=" + place + ", organizer=" + organizer + '}';
+        return "Event{" + "event_id=" + event_id + ", date=" + date + ", maxParticipants=" + maxParticipants + ", minParticipants=" + minParticipants + ", actualParticipants=" + actualParticipants + ", description=" + description + ", price=" + price + ", category=" + category + ", title=" + title + ", client=" + client + ", comment=" + comment + ", personalResource=" + personalResource + ", eventRevisions=" + eventRevisions + ", place=" + place + ", organizer=" + organizer + '}';
     }
 
- 
 
 }

@@ -11,6 +11,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,6 +23,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Entidad revisar que se crea con la relacion de EventManager y Event
  * @author UnaiUrtiaga
  */
+@NamedQueries({
+    @NamedQuery(
+            name="getRevisionByMail", query="SELECT r FROM Revise r WHERE r.event.event_id=:event_id AND r.eventManager.email=:email"
+    )
+    ,/*           EN PROCESO PERO NO OBLIGATORIO
+    @NamedQuery(
+            name="getRevisionByUsername", query="SELECT r FROM Revise r WHERE r.event.event_id=:event_id AND r.eventManager.username=:username"
+    )*/
+    @NamedQuery(
+            name="getEveryEventRevisions", query="SELECT r FROM Revise r WHERE r.event.event_id=:event_id"
+    )
+    ,
+    @NamedQuery(
+            name="getEveryUserRevisions", query="SELECT r FROM Revise r WHERE r.eventManager.email=:email"
+    )    
+})
 @Entity
 @Table (name="revise", schema="kedamosdb")
 @XmlRootElement
@@ -33,6 +51,17 @@ public class Revise implements Serializable {
      */
     @EmbeddedId
     private ReviseId revise_id;
+    
+    /**
+     * Atributo booleano que indica si el evento ha sido aceptado o no
+     */
+    @NotNull
+    private Boolean isAccepted;
+    
+    /**
+     * Atributo de texto que guarda un mensaje enviado por el event_manager
+     */
+    private String message;
     
     /**
      * Atributo tipo fecha que guarda cuando ha sido revisado el evento
@@ -55,22 +84,24 @@ public class Revise implements Serializable {
     @ManyToOne
     private Event event;
 
-    /**
-     * Get de los IDs de la revision
-     * @return Devuelve la clase ReviseId que contiene todos los IDs de la entidad
-     */
-    public ReviseId getId() {
-        return revise_id;
+    public Boolean getIsAccepted() {
+        return isAccepted;
     }
 
-    /**
-     * Set de los IDs de la revision
-     * @param id 
-     */
-    public void setId(Long id) {
-        this.revise_id = revise_id;
+    public void setIsAccepted(Boolean isAccepted) {
+        this.isAccepted = isAccepted;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    
+    
     /**
      * Get de la fecha de revision
      * @return Devuelve la fecha de la revision
@@ -157,7 +188,7 @@ public class Revise implements Serializable {
      */
     @Override
     public String toString() {
-        return "Revise{" + "revise_id=" + revise_id + ", reviseDate=" + revisionDate + ", reviser=" + eventManager + ", event=" + event + '}';
+        return "Revise{" + "revise_id=" + revise_id + ", isAccepted=" + isAccepted + ", message=" + message + ", reviseDate=" + revisionDate + ", reviser=" + eventManager + ", event=" + event + '}';
     }
 
     

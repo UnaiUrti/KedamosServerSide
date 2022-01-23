@@ -60,8 +60,8 @@ public class ReviseId implements Serializable{
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.user_id);
-        hash = 53 * hash + Objects.hashCode(this.event_id);
+        hash = 17 * hash + Objects.hashCode(this.user_id);
+        hash = 17 * hash + Objects.hashCode(this.event_id);
         return hash;
     }
 
@@ -84,9 +84,6 @@ public class ReviseId implements Serializable{
             return false;
         }
         return true;
-    }
-    
-    
-    
+    }   
     
 }
