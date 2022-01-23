@@ -5,12 +5,11 @@
  */
 package kedamosServerSide.security;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -23,7 +22,7 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
-import java.util.Base64;
+import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -37,6 +36,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import static kedamosServerSide.security.KeyGenerator.fileReader;
 
 /**
  *
@@ -45,69 +45,99 @@ import javax.crypto.spec.SecretKeySpec;
 public class Crypt {
 
     private static byte[] salt = "esta es la salt!".getBytes();
+    private static ResourceBundle rb = ResourceBundle.getBundle("kedamosServerSide.security.EmailCredentials");
+    private static ResourceBundle rbp = ResourceBundle.getBundle("kedamosServerSide.security.Private");
+    
+    public static void encryptSimetric(String email, String password) {
 
-    public static byte[] encryptSimetric(String passwd) {
-
-        byte[] encodedMessage = null;
-        String ret = null;
+        //String ret = null;
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
-        ResourceBundle clave = ResourceBundle.getBundle("kedamosServerSide.security.SimetricKey");
         try {
+            // Creamos el archivo de configuracion con los antiguos datos       
+            OutputStream output = new FileOutputStream("java/kedamosServerSide/security/EmailCredentials.properties");
 
-            keySpec = new PBEKeySpec(clave.getString("key").toCharArray(), salt, 65536, 128);
+            // Creamos la clase properties y le pasamos el archivo de configuracion
+            Properties prop = new Properties();
+
+            keySpec = new PBEKeySpec(rb.getString("key").toCharArray(), salt, 65536, 128);
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
             SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            encodedMessage = cipher.doFinal(passwd.getBytes());
-
+            
+            byte[] encodedEmail = cipher.doFinal(email.getBytes());
             byte[] iv = cipher.getIV();
-            byte[] combined = concatArrays(iv, encodedMessage);
-
-            fileWriter("java/kedamosServerSide/security/EmailSimetricPasswd.dat", combined);
-            ret = new String(encodedMessage);
-
-        } catch (InvalidKeyException | NoSuchAlgorithmException | 
-                InvalidKeySpecException | BadPaddingException | 
-                IllegalBlockSizeException | NoSuchPaddingException e) {
-        }
-
-        return encodedMessage;
-
-    }
-
-    public static String decryptSimetric() {
-
-        byte[] fileContent = fileReader("java/kedamosServerSide/security/EmailSimetricPasswd.dat");
-        byte[] decodedMessage = null;
-        String ret = null;
-        KeySpec keySpec = null;
-        SecretKeyFactory secretKeyFactory = null;
-        ResourceBundle clave = ResourceBundle.getBundle("KedamosServerSide.security.SimetricKey");
-        try {
-
-            keySpec = new PBEKeySpec(clave.getString("key").toCharArray(), salt, 65536, 128);
-            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
-            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
+            byte[] emailCombined = concatArrays(iv, encodedEmail);
             
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(fileContent, 0, 16));
-            cipher.init(Cipher.DECRYPT_MODE, privateKey, ivParam);
-            decodedMessage = cipher.doFinal(Arrays.copyOfRange(fileContent, 16, fileContent.length));
-            ret = new String(decodedMessage);
+            byte[] encodedPassword = cipher.doFinal(password.getBytes());
+            byte[] passwordCombined = concatArrays(iv, encodedPassword);
             
-        } catch (IllegalBlockSizeException | BadPaddingException
-                | InvalidKeyException | NoSuchAlgorithmException
-                | NoSuchPaddingException | InvalidKeySpecException | 
-                InvalidAlgorithmParameterException ex) {
+            /**
+             * Insertamos en la clase properties los valores antiguos mas las
+             * credenciales ecriptadas
+             */
+            prop.setProperty("smtp_host", rb.getString("smtp_host"));
+            prop.setProperty("smtp_port", rb.getString("smtp_port"));
+            prop.setProperty("key", rb.getString("key"));
+            prop.setProperty("email", byteArrayToHexString(emailCombined));
+            prop.setProperty("password", byteArrayToHexString(passwordCombined));
+    
+            // Guardamos los datos en el archivo de configuracion
+            prop.store(output, null);
+
+            //fileWriter("java/kedamosServerSide/security/EmailSimetricPasswd.dat", combined);
+            //ret = new String(encodedMessage);
+        } catch (InvalidKeyException | NoSuchAlgorithmException
+                | InvalidKeySpecException | BadPaddingException
+                | IllegalBlockSizeException | NoSuchPaddingException e) {
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return ret;
+        //return encodedMessage;
+    }
+
+    public static String[] decryptSimetric() {
+
+        //byte[] fileContent = fileReader("java/kedamosServerSide/security/EmailSimetricPasswd.dat");
+        String[] emailCredentials = null;
+        byte[] emailContent = hexStringToByteArray(rb.getString("email"));
+        byte[] passwordContent = hexStringToByteArray(rb.getString("password"));
+        //byte[] decodedMessage = null;
+        String ret = null;
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        //ResourceBundle clave = ResourceBundle.getBundle("KedamosServerSide.security.SimetricKey");
+        try {
+
+            keySpec = new PBEKeySpec(rb.getString("key").toCharArray(), salt, 65536, 128);
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(passwordContent, 0, 16));
+            cipher.init(Cipher.DECRYPT_MODE, privateKey, ivParam);
+            byte[] decodedEmail = cipher.doFinal(Arrays.copyOfRange(emailContent, 16, emailContent.length));
+            byte[] decodedPassword = cipher.doFinal(Arrays.copyOfRange(passwordContent, 16, passwordContent.length));
+
+            //et = new String(decodedPassword);
+
+            emailCredentials = new String[]{new String(decodedEmail),new String(decodedPassword)};
+            
+        } catch (IllegalBlockSizeException | BadPaddingException
+                | InvalidKeyException | NoSuchAlgorithmException
+                | NoSuchPaddingException | InvalidKeySpecException
+                | InvalidAlgorithmParameterException ex) {
+            Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return emailCredentials;
     }
 
     /**
@@ -115,7 +145,7 @@ public class Crypt {
      * @param passwd
      * @return
      */
-    public static byte[] encryptAsimetric(String passwd) {
+    public static String encryptAsimetric(String passwd) {
 
         byte[] encodedMessage = null;
 
@@ -125,33 +155,35 @@ public class Crypt {
             cipher.init(Cipher.ENCRYPT_MODE, readPublicKey());
             //
             encodedMessage = cipher.doFinal(passwd.getBytes());
-        } catch (IllegalBlockSizeException | BadPaddingException | 
-                InvalidKeyException | NoSuchAlgorithmException | 
-                NoSuchPaddingException ex) {
+            
+        } catch (IllegalBlockSizeException | BadPaddingException
+                | InvalidKeyException | NoSuchAlgorithmException
+                | NoSuchPaddingException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return encodedMessage;
+        return byteArrayToHexString(encodedMessage);
 
     }
 
-    public static byte[] decryptAsimetric(byte[] passwd) {
+    public static String decryptAsimetric(String password) {
 
-        byte[] encodedMessage = null;
+        byte[] passwordContent = hexStringToByteArray(password);
+        byte[] decodedMessage = null;
 
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             //
             cipher.init(Cipher.DECRYPT_MODE, readPrivateKey());
             //
-            encodedMessage = cipher.doFinal(passwd);
-        } catch (IllegalBlockSizeException | BadPaddingException | 
-                InvalidKeyException | NoSuchAlgorithmException | 
-                NoSuchPaddingException ex) {
+            decodedMessage = cipher.doFinal(passwordContent);
+        } catch (IllegalBlockSizeException | BadPaddingException
+                | InvalidKeyException | NoSuchAlgorithmException
+                | NoSuchPaddingException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return encodedMessage;
+        return new String(decodedMessage);
     }
 
     public static String hash(String passwd) {
@@ -167,16 +199,26 @@ public class Crypt {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return bytesToHex(hash);
+        return byteArrayToHexString(hash);
 
     }
 
-    public static String bytesToHex(byte[] bytes) {
+    public static String byteArrayToHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
     }
 
     public static String generatePassword() {
@@ -220,7 +262,7 @@ public class Crypt {
         PrivateKey priKey = null;
         try {
             // Obtener los bytes del archivo donde este guardado la llave privada
-            byte[] priKeyBytes = fileReader("java/kedamosServerSide/security/Private.key");
+            byte[] priKeyBytes = hexStringToByteArray(rbp.getString("privateKey"));
             //
             PKCS8EncodedKeySpec encPriKeySpec = new PKCS8EncodedKeySpec(priKeyBytes);
             //
@@ -238,35 +280,4 @@ public class Crypt {
         return ret;
     }
 
-    /**
-     * Escribe un fichero
-     * 
-     * @param path Path del fichero
-     * @param text Texto a escibir
-     */
-    public static void fileWriter(String path, byte[] text) {
-        try (FileOutputStream fos = new FileOutputStream(path)) {
-                fos.write(text);
-        } catch (IOException e) {
-                e.printStackTrace();
-        }
-    }
-
-    /**
-     * Retorna el contenido de un fichero
-     * 
-     * @param path Path del fichero
-     * @return El texto del fichero
-     */
-    public static byte[] fileReader(String path) {
-        byte ret[] = null;
-        File file = new File(path);
-        try {
-            ret = Files.readAllBytes(file.toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-    
 }
