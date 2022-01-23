@@ -17,6 +17,11 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entidad que representa al usuario que administra los eventos.
  * @author Steven Arce
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getEventManagerByUsername", query = "SELECT e FROM EventManager e WHERE e.username = :username"
+    )
+})
 @Entity
 @DiscriminatorValue("Event_manager")
 @XmlRootElement
@@ -39,7 +44,6 @@ public class EventManager extends User implements Serializable {
     }
 
     //@XmlTransient
-    @XmlTransient
     public Set<Revise> getMyRevisions() {
         return myRevisions;
     }

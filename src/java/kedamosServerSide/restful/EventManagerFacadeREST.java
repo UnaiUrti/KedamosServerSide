@@ -8,10 +8,12 @@ package kedamosServerSide.restful;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -23,7 +25,7 @@ import kedamosServerSide.security.Crypt;
 
 /**
  *
- * @author Steven Arce
+ * @author Freak
  */
 @Stateless
 @Path("kedamosserverside.entities.eventmanager")
@@ -40,7 +42,8 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(EventManager entity) {
-        entity.setPassword(Crypt.hash(entity.getPassword()));
+        String decryptPassword = Crypt.decryptAsimetric(entity.getPassword());
+        entity.setPassword(Crypt.hash(decryptPassword));
         super.create(entity);
     }
 
@@ -85,9 +88,24 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("getEventManagerByUsername/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public EventManager getClientByUsername(@PathParam("username") String username) {
+        EventManager eventManager;
+        try {
+            eventManager = (EventManager) em.createNamedQuery("getEventManagerByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return eventManager;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }

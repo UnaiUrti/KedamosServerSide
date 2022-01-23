@@ -30,7 +30,7 @@ import kedamosServerSide.security.Email;
 
 /**
  *
- * @author Steven Arce
+ * @author Freak
  */
 @Stateless
 @Path("kedamosserverside.entities.user")
@@ -97,30 +97,31 @@ public class UserFacadeREST extends AbstractFacade<User> {
     public User userLoginValidation(@PathParam("username") String username,
             @PathParam("passwd") String passwd) {
         User user = null;
+        String decryptPassword = Crypt.decryptAsimetric(passwd);
         try {
             user = (User) em.createNamedQuery("getUserByUsername")
                     .setParameter("username", username)
                     .getSingleResult();
             if (user instanceof Client) {
                 user = (Client) user;
-                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
                     throw new NotAuthorizedException("Las contraseñas no coinciden");
                 }
             }
             if (user instanceof EventManager) {
                 user = (EventManager) user;
-                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
                     throw new NotAuthorizedException("Las contraseñas no coinciden");
                 }
             }
             if (user.getPrivilege() == UserPrivilege.ADMIN) {
-                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(passwd))) {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
                     throw new NotAuthorizedException("Las contraseñas no coinciden");
                 }
 
             }
         } catch (NoResultException e) {
-            throw new NotFoundException("No se ha encontrado la entidad usuario");
+            throw new NotFoundException();
         }
         return user;
     }
@@ -130,10 +131,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public User isEmailExisting(@PathParam("email") String email) {
         User user;
-
-        user = (User) em.createNamedQuery("getUserByEmail")
-                .setParameter("email", email)
-                .getSingleResult();
+        try {
+            user = (User) em.createNamedQuery("getUserByEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
         return user;
     }
 
@@ -142,33 +146,36 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces({MediaType.APPLICATION_XML})
     public User isUsernameExisting(@PathParam("username") String username) {
         User user;
-
-        user = (User) em.createNamedQuery("getUserByUsername")
-                .setParameter("username", username)
-                .getSingleResult();
+        try {
+            user = (User) em.createNamedQuery("getUserByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
         return user;
     }
 
-    /*
     @GET
     @Path("resetPassword/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public User resetPassword(@PathParam("email") String email) {
         User user;
+        try {
+            user = (User) em.createNamedQuery("getUserByEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
 
-        user = (User) em.createNamedQuery("getUserByEmail")
-                .setParameter("email", email)
-                .getSingleResult();
-        if (user == null) {
-            throw new NotFoundException();
-        } else {
             String newPassword = Crypt.generatePassword();
-            user.setPassword(newPassword);
-            Email.sendEmail(email, "Encabezado", newPassword);
+            user.setPassword(Crypt.hash(newPassword));
+            Email.sendEmailResetPassword(email, newPassword);
+
+        } catch (NoResultException e) {
+            throw new NotFoundException();
         }
         return user;
     }
-     */
+
     @Override
     protected EntityManager getEntityManager() {
         return em;

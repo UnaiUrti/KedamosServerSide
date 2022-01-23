@@ -22,6 +22,11 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entidad que representa al usuario que es un cliente.
  * @author Steven Arce
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getClientByUsername", query = "SELECT c FROM Client c WHERE c.username = :username"
+    )
+})
 @Entity
 @DiscriminatorValue("Client")
 @XmlRootElement
@@ -61,7 +66,6 @@ public class Client extends User implements Serializable {
     }
     
     //@XmlTransient
-    @XmlTransient
     public Set<Event> getMyEvents() {
         return myEvents;
     }
@@ -71,7 +75,6 @@ public class Client extends User implements Serializable {
     }
     
     //@XmlTransient
-    @XmlTransient
     public Set<Event> getJoinEvents() {
         return joinEvents;
     }
@@ -81,7 +84,6 @@ public class Client extends User implements Serializable {
     }
     
     //@XmlTransient
-    @XmlTransient
     public Set<Comment> getMyComments() {
         return myComments;
     }
