@@ -3,20 +3,16 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.CascadeType;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import static javax.persistence.FetchType.EAGER;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.transaction.Transactional;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que representa al usuario que es un cliente.
@@ -25,6 +21,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "getClientByUsername", query = "SELECT c FROM Client c WHERE c.username = :username"
+    ),
+    @NamedQuery(
+            name = "getClientByEmail", query = "SELECT c FROM Client c WHERE c.email = :email"
     )
 })
 @Entity
