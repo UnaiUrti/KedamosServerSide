@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -22,9 +25,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Entidad que representa a todos los usuarios.
  * @author Steven Arce
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getUserByUsername", query = "SELECT u FROM User u WHERE u.username = :username"
+    ),
+    @NamedQuery(
+            name = "getUserByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
+    )
+})
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="user_type")
+@DiscriminatorColumn(name="user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "user", schema = "kedamosdb")
 @XmlRootElement
 public class User implements Serializable {
@@ -41,6 +52,7 @@ public class User implements Serializable {
     private Date lastPasswordChange;  
     @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -109,10 +121,10 @@ public class User implements Serializable {
     public void setPrivilege(UserPrivilege privilege) {
         this.privilege = privilege;
     }
-    
+
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = 5;
         hash = 59 * hash + Objects.hashCode(this.user_id);
         return hash;
     }
@@ -139,9 +151,5 @@ public class User implements Serializable {
     public String toString() {
         return "User{" + "user_id=" + user_id + ", fullName=" + fullName + ", status=" + status + ", lastPasswordChange=" + lastPasswordChange + ", email=" + email + ", username=" + username + ", password=" + password + ", privilege=" + privilege + '}';
     }
-
-    
-
-    
     
 }

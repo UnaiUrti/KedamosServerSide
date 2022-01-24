@@ -41,9 +41,8 @@ public class Comment implements Serializable {
      * Campo relacional con user
      */
     //@MapsId("client_id")
-        @MapsId("userId")
+    @MapsId("userId")
     @ManyToOne
-
     private Client client;
     /**
      * Campo relacional de eventos
@@ -51,10 +50,10 @@ public class Comment implements Serializable {
     /**
      * Contenido del comentario
      */
-            @MapsId("eventId")
+    @MapsId("eventId")
     @ManyToOne
-
     private Event event;
+    
     private String description;
     /**
      * Fecha en la que se realizo el comentario
@@ -73,7 +72,6 @@ public class Comment implements Serializable {
      *
      * @return Comment_id
      */
-
     public Comment_id getComment_id() {
         return comment_id;
     }
@@ -162,8 +160,5 @@ public class Comment implements Serializable {
         }
         return true;
     }
-    
-    
-    
 
 }

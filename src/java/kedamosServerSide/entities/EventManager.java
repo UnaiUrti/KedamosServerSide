@@ -5,6 +5,10 @@ import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -13,27 +17,33 @@ import javax.xml.bind.annotation.XmlTransient;
  * Entidad que representa al usuario que administra los eventos.
  * @author Steven Arce
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getEventManagerByUsername", query = "SELECT e FROM EventManager e WHERE e.username = :username"
+    )
+})
 @Entity
-@DiscriminatorValue("event_manager")
+@DiscriminatorValue("Event_manager")
 @XmlRootElement
 public class EventManager extends User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
-    private Category managerCategoy;
-    
-    @OneToMany(mappedBy = "eventManager", cascade = ALL)
+
+    @Enumerated(EnumType.STRING)
+    private Category managerCategory;
+
+    @OneToMany(mappedBy = "eventManager")
     private Set<Revise> myRevisions;
 
-    public Category getManagerCategoy() {
-        return managerCategoy;
+    public Category getManagerCategory() {
+        return managerCategory;
     }
 
-    public void setManagerCategoy(Category managerCategoy) {
-        this.managerCategoy = managerCategoy;
+    public void setManagerCategory(Category managerCategory) {
+        this.managerCategory = managerCategory;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public Set<Revise> getMyRevisions() {
         return myRevisions;
     }
@@ -42,10 +52,4 @@ public class EventManager extends User implements Serializable {
         this.myRevisions = myRevisions;
     }
 
-    
-  
-    
-   
-    
-    
 }
