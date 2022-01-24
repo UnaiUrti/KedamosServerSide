@@ -51,13 +51,17 @@ public class KeyGenerator {
             byte[] pubKey = keyPair.getPublic().getEncoded();
             byte[] priKey = keyPair.getPrivate().getEncoded();
             
+            OutputStream outputPublic = new FileOutputStream("java/kedamosServerSide/security/Public.properties");
+            Properties propPublic = new Properties();
+            propPublic.setProperty("publicKey", byteArrayToHexString(pubKey));
+            propPublic.store(outputPublic, null);
             // Se guarda la clave pública y la clave privada en el archivo especificado
-            fileWriter("java/kedamosServerSide/security/Public.key", pubKey);
+            //fileWriter("java/kedamosServerSide/security/Public.key", pubKey);
             
-            OutputStream output = new FileOutputStream("java/kedamosServerSide/security/Private.properties");
-            Properties prop = new Properties();
-            prop.setProperty("privateKey", byteArrayToHexString(priKey));
-            prop.store(output, null);
+            OutputStream outputPrivate = new FileOutputStream("java/kedamosServerSide/security/Private.properties");
+            Properties propPrivate = new Properties();
+            propPrivate.setProperty("privateKey", byteArrayToHexString(priKey));
+            propPrivate.store(outputPrivate, null);
             
         } catch (NoSuchAlgorithmException | IOException ex) {
             Logger.getLogger(KeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
