@@ -84,7 +84,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     }
 
     @GET
-    @Path("eventManagerLoginValidation/{username}/{passwd}")
+    @Path("clientLoginValidation/{username}/{passwd}")
     @Produces({MediaType.APPLICATION_XML})
     public Client clientLoginValidation(@PathParam("username") String username,
             @PathParam("passwd") String passwd) {
