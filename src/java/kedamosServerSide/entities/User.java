@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="privilege")
+@DiscriminatorValue("ADMIN")
 @Table(name = "user", schema = "kedamosdb")
 @XmlRootElement
 public class User implements Serializable {
@@ -55,6 +57,7 @@ public class User implements Serializable {
     @Column(unique = true)
     private String username;
     private String password;
+    @Column(insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
 

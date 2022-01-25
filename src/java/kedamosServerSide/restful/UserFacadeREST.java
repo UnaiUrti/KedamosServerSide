@@ -91,6 +91,30 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("adminLoginValidation/{username}/{passwd}")
+    @Produces({MediaType.APPLICATION_XML})
+    public User adminLoginValidation(@PathParam("username") String username,
+            @PathParam("passwd") String passwd) {
+        User user = null;
+        String decryptPassword = Crypt.decryptAsimetric(passwd);
+        try {
+            user = (User) em.createNamedQuery("getUserByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
+            if (user.getPrivilege() != UserPrivilege.ADMIN) {
+                throw new NotFoundException();
+            } else {
+                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
+                    throw new NotAuthorizedException("Las contraseñas no coinciden");
+                }
+            }
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return user;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
