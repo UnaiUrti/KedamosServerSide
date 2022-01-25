@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 })
 @Entity
-@DiscriminatorValue("Event_manager")
+@DiscriminatorValue("EVENT_MANAGER")
 @XmlRootElement
 public class EventManager extends User implements Serializable {
 

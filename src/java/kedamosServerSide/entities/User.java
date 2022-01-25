@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name="privilege")
 @Table(name = "user", schema = "kedamosdb")
 @XmlRootElement
 public class User implements Serializable {
