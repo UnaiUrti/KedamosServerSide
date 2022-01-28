@@ -4,6 +4,8 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import static javax.persistence.CascadeType.MERGE;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -57,6 +59,7 @@ public class PersonalResource implements Serializable {
     /**
      * Enumeracion que indica que tipo de personal es
      */
+    @Column(unique=true)
     @Enumerated(EnumType.STRING)
     private Type type;
     /**
@@ -66,12 +69,12 @@ public class PersonalResource implements Serializable {
     /**
      * Fecha de fin de contrato
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateExpired;
     /**
      * Fecha contratado
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateHired;
     
     //Campo relacional
