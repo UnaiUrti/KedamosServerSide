@@ -49,11 +49,11 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     public void create(PersonalResource entity) {
         //compruebo que el evento esta en el contexto de persistencia si no lo meto con el merge
        if(!em.contains(entity.getEvent()))
-            em.merge(entity.getEvent());
-        
+            em.merge(entity);
+       
        
         em.flush();
-        super.create(entity);
+       //super.create(entity);
        
     }
 
@@ -187,10 +187,10 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     @GET
     @Path("getPersonalByEvent/{event_id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Set<PersonalResource> getPersonalByEvent(@PathParam("event_id")Long event_id)  {
-       Set<PersonalResource> per=null;
+    public List<PersonalResource> getPersonalByEvent(@PathParam("event_id")Long event_id)  {
+       List<PersonalResource> per;
         
-             per= new HashSet( em.createNamedQuery("getPersonalByEvent").setParameter("event_id", event_id).getResultList());
+             per=  em.createNamedQuery("getPersonalByEvent").setParameter("event_id", event_id).getResultList();
         
             return per;
 }
