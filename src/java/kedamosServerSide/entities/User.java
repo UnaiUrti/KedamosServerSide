@@ -28,10 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "getUserByUsername", query = "SELECT u FROM User u WHERE u.username = :username"
-    ),
-    @NamedQuery(
-            name = "getUserByEmail", query = "SELECT u FROM User u WHERE u.email = :email"
+            name = "validateLogin", query = "SELECT u FROM User u WHERE u.username = :username"
     )
 })
 @Entity

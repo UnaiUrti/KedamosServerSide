@@ -92,25 +92,21 @@ public class UserFacadeREST extends AbstractFacade<User> {
     }
 
     @GET
-    @Path("adminLoginValidation/{username}/{passwd}")
+    @Path("validateLogin/{username}/{password}")
     @Produces({MediaType.APPLICATION_XML})
-    public User adminLoginValidation(@PathParam("username") String username,
-            @PathParam("passwd") String passwd) {
-        User user = null;
-        String decryptPassword = Crypt.decryptAsimetric(passwd);
-        try {
-            user = (User) em.createNamedQuery("getUserByUsername")
-                    .setParameter("username", username)
-                    .getSingleResult();
-            if (user.getPrivilege() != UserPrivilege.ADMIN) {
-                throw new NotFoundException();
-            } else {
-                if (!user.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
-                    throw new NotAuthorizedException("Las contraseñas no coinciden");
-                }
-            }
-        } catch (NoResultException e) {
+    public List<User> validateLogin(@PathParam("username") String username,
+            @PathParam("password") String password) {
+        List<User> user = null;
+        String hashPassword = Crypt.hash(Crypt.decryptAsimetric(password));
+        user = (List<User>) em.createNamedQuery("validateLogin")
+                .setParameter("username", username)
+                .getResultList();
+        if (user.isEmpty()) {
             throw new NotFoundException();
+        } else {
+            if (!user.get(0).getPassword().equalsIgnoreCase(hashPassword)) {
+                throw new NotAuthorizedException("La contraseña no coincide");
+            }
         }
         return user;
     }
