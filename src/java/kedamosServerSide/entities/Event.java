@@ -106,24 +106,24 @@ public class Event implements Serializable {
     /**
      * Lista de Clientes apuntados al Evento
      */
-    @ManyToMany(mappedBy = "joinEvents", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "joinEvents", fetch = FetchType.EAGER, cascade=CascadeType.MERGE)
     private Set<Client> client;
 
     /**
      * Lista de comentarios de los usuarios sonbre el Evento
      */
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.MERGE)
     private Set<Comment> comment;
 
     /**
      * Personal necesario para el evento
      */
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.MERGE)
     private Set<PersonalResource> personalResource;
     /**
      *
      */
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER, cascade=CascadeType.MERGE)
     private Set<Revise> eventRevisions;
 
 
