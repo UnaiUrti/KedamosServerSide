@@ -36,6 +36,7 @@ public class ApplicationConfig extends Application {
         resources.add(kedamosServerSide.restful.PersonalResourceFacadeREST.class);
         resources.add(kedamosServerSide.restful.PlaceFacadeREST.class);
         resources.add(kedamosServerSide.restful.ReviseFacadeREST.class);
+        resources.add(kedamosServerSide.restful.SignInFacadeREST.class);
         resources.add(kedamosServerSide.restful.UserFacadeREST.class);
     }
     
