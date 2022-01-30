@@ -3,13 +3,15 @@ package kedamosServerSide.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,13 +19,16 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad que representa a todos los usuarios.
+ *
  * @author Steven Arce
  */
 @NamedQueries({
@@ -33,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="privilege")
+@DiscriminatorColumn(name = "privilege")
 @DiscriminatorValue("ADMIN")
 @Table(name = "user", schema = "kedamosdb")
 @XmlRootElement
@@ -46,9 +51,9 @@ public class User implements Serializable {
     private Long user_id;
     private String fullName;
     @Enumerated(EnumType.STRING)
-    private UserStatus status; 
+    private UserStatus status;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date lastPasswordChange;  
+    private Date lastPasswordChange;
     @Column(unique = true)
     private String email;
     @Column(unique = true)
@@ -57,6 +62,8 @@ public class User implements Serializable {
     @Column(insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private Set<SignIn> signIns;
 
     public Long getUser_id() {
         return user_id;
@@ -122,6 +129,15 @@ public class User implements Serializable {
         this.privilege = privilege;
     }
 
+    @XmlTransient
+    public Set<SignIn> getSignIns() {
+        return signIns;
+    }
+
+    public void setSignIns(Set<SignIn> signIns) {
+        this.signIns = signIns;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -151,5 +167,5 @@ public class User implements Serializable {
     public String toString() {
         return "User{" + "user_id=" + user_id + ", fullName=" + fullName + ", status=" + status + ", lastPasswordChange=" + lastPasswordChange + ", email=" + email + ", username=" + username + ", password=" + password + ", privilege=" + privilege + '}';
     }
-    
+
 }

@@ -8,49 +8,44 @@ package kedamosServerSide.restful;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import kedamosServerSide.entities.User;
-import kedamosServerSide.security.Crypt;
+import kedamosServerSide.entities.SignIn;
 
 /**
  *
  * @author Freak
  */
 @Stateless
-@Path("kedamosserverside.entities.user")
-public class UserFacadeREST extends AbstractFacade<User> {
+@Path("kedamosserverside.entities.signin")
+public class SignInFacadeREST extends AbstractFacade<SignIn> {
 
     @PersistenceContext(unitName = "KedamosServerSidePU")
     private EntityManager em;
 
-    public UserFacadeREST() {
-        super(User.class);
+    public SignInFacadeREST() {
+        super(SignIn.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) {
+    public void create(SignIn entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, User entity) {
+    public void edit(@PathParam("id") Long id, SignIn entity) {
         super.edit(entity);
     }
 
@@ -63,21 +58,21 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("id") Long id) {
+    public SignIn find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findAll() {
+    public List<SignIn> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<SignIn> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
@@ -88,33 +83,9 @@ public class UserFacadeREST extends AbstractFacade<User> {
         return String.valueOf(super.count());
     }
 
-    @GET
-    @Path("validateLogin/{username}/{password}")
-    @Produces({MediaType.APPLICATION_XML})
-    public List<User> validateLogin(@PathParam("username") String username,
-            @PathParam("password") String password) {
-        List<User> user = null;
-        String hashPassword = Crypt.hash(Crypt.decryptAsimetric(password));
-        user = (List<User>) em.createNamedQuery("validateLogin")
-                .setParameter("username", username)
-                .getResultList();
-        if (user.isEmpty()) {
-            throw new NotFoundException();
-        } else {
-            if (!user.get(0).getPassword().equalsIgnoreCase(hashPassword)) {
-                throw new NotAuthorizedException("La contraseña no coincide");
-            }
-        }
-        StoredProcedureQuery query = em.createStoredProcedureQuery("kedamosdb.last_ten_sign_in")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
-                .setParameter(1, user.get(0).getUsername());
-        query.execute();
-        return user;
-    }
-
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
 }
