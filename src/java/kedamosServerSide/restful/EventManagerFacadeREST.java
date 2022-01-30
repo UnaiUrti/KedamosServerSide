@@ -52,6 +52,9 @@ public class EventManagerFacadeREST extends AbstractFacade<EventManager> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Long id, EventManager entity) {
+        if (entity.getPassword().length() >=200) {
+            entity.setPassword(Crypt.hash(Crypt.decryptAsimetric(entity.getPassword())));
+        }
         super.edit(entity);
     }
 
