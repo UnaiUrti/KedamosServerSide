@@ -84,6 +84,56 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
     }
 
     @GET
+    @Path("clientLoginValidation/{username}/{passwd}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Client clientLoginValidation(@PathParam("username") String username,
+            @PathParam("passwd") String passwd) {
+        Client client = null;
+        String decryptPassword = Crypt.decryptAsimetric(passwd);
+        try {
+            client = (Client) em.createNamedQuery("getClientByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
+            if (!client.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
+                throw new NotAuthorizedException("Las contraseñas no coinciden");
+            }
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return client;
+    }
+
+    @GET
+    @Path("isEmailExisting/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Client isEmailExisting(@PathParam("email") String email) {
+        Client client;
+        try {
+            client = (Client) em.createNamedQuery("getClientByEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return client;
+    }
+
+    @GET
+    @Path("isUsernameExisting/{username}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Client isUsernameExisting(@PathParam("username") String username) {
+        Client client;
+        try {
+            client = (Client) em.createNamedQuery("getClientByUsername")
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return client;
+    }
+
+    @GET
     @Path("getClientByUsername/{username}")
     @Produces({MediaType.APPLICATION_XML})
     public Client getClientByUsername(@PathParam("username") String username) {
@@ -97,7 +147,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
         }
         return client;
     }
-    
+
     @GET
     @Path("validatePassword/{username}/{passwd}")
     @Produces({MediaType.APPLICATION_XML})
@@ -105,9 +155,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
             @PathParam("passwd") String passwd) {
 
         Client client = null;
-
         try {
-
             String decryptPassword = Crypt.decryptAsimetric(passwd);
 
             client = (Client) em.createNamedQuery("getClientByUsername")
@@ -117,7 +165,6 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
             if (!client.getPassword().equalsIgnoreCase(Crypt.hash(decryptPassword))) {
                 throw new NotAuthorizedException("Las contraseñas no coinciden");
             }
-
         } catch (NoResultException e) {
             throw new NotFoundException();
         }
@@ -131,6 +178,26 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
         entity.setPassword(Crypt.decryptAsimetric(entity.getPassword()));
         Email.sendEmailChangePassword(entity.getEmail());
         super.edit(entity);
+    }
+
+    @GET
+    @Path("resetPassword/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Client resetPassword(@PathParam("email") String email) {
+        Client client;
+        try {
+            client = (Client) em.createNamedQuery("getClientByEmail")
+                    .setParameter("email", email)
+                    .getSingleResult();
+
+            String newPassword = Crypt.generatePassword();
+            client.setPassword(Crypt.hash(newPassword));
+            Email.sendEmailResetPassword(email, newPassword);
+
+        } catch (NoResultException e) {
+            throw new NotFoundException();
+        }
+        return client;
     }
 
     @Override

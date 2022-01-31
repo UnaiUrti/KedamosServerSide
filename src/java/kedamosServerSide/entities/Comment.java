@@ -64,7 +64,7 @@ public class Comment implements Serializable {
     /**
      * Valoracion del evento de uno a cinco
      */
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Mark mark;
 
     //Setters y Getters

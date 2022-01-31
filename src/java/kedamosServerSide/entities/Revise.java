@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad revisar que se crea con la relacion de EventManager y Event
@@ -126,6 +127,7 @@ public class Revise implements Serializable {
         this.revise_id = revise_id;
     }
 
+    @XmlTransient
     public EventManager getEventManager() {
         return eventManager;
     }

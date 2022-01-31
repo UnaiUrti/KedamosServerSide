@@ -2,11 +2,13 @@ package kedamosServerSide.entities;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -20,10 +22,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "getEventManagerByUsername", query = "SELECT e FROM EventManager e WHERE e.username = :username"
+    ),
+    @NamedQuery(
+            name = "getEventManagerByEmail", query = "SELECT e FROM EventManager e WHERE e.email = :email"
     )
 })
 @Entity
-@DiscriminatorValue("Event_manager")
+@DiscriminatorValue("EVENT_MANAGER")
 @XmlRootElement
 public class EventManager extends User implements Serializable {
 
@@ -32,7 +37,7 @@ public class EventManager extends User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Category managerCategory;
 
-    @OneToMany(mappedBy = "eventManager")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "eventManager", fetch = FetchType.EAGER)
     private Set<Revise> myRevisions;
 
     public Category getManagerCategory() {
