@@ -59,7 +59,7 @@ public class PersonalResource implements Serializable {
     /**
      * Enumeracion que indica que tipo de personal es
      */
-    @Column(unique=true)
+
     @Enumerated(EnumType.STRING)
     private Type type;
     /**
