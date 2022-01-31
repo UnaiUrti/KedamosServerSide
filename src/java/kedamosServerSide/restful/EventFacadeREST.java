@@ -45,7 +45,6 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Event entity) {
-        entity.setEvent_id(0L);
         super.create(entity);
     }
 
@@ -57,7 +56,7 @@ public class EventFacadeREST extends AbstractFacade<Event> {
     }
 
     @DELETE
-    @Path("deleteById/{id}")
+    @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
     }
