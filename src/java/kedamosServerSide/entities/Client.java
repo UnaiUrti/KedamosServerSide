@@ -36,16 +36,16 @@ public class Client extends User implements Serializable {
     private Long accountNumber;
     private boolean isPremium;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "organizer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "organizer", fetch = FetchType.EAGER)
     private Set<Event> myEvents;
 
-    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_event", schema = "kedamosdb",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "event_id"))
     private Set<Event> joinEvents;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "client", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Comment> myComments;
 
     public Long getAccountNumber() {

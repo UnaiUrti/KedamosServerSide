@@ -37,7 +37,7 @@ public class EventManager extends User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Category managerCategory;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "eventManager", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "eventManager", fetch = FetchType.EAGER)
     private Set<Revise> myRevisions;
 
     public Category getManagerCategory() {
