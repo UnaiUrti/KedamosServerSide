@@ -23,8 +23,8 @@ import kedamosServerSide.entities.Comment;
 import kedamosServerSide.entities.Comment_id;
 
 /**
- *
- * @author 2dam
+ *Esta clase maneja el crud de la entidad comentario
+ * @author Irkus de la fuente
  */
 @Stateless
 @Path("kedamosserverside.entities.comment")
@@ -54,10 +54,17 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         return key;
     }
 
+    /**
+     *
+     */
     public CommentFacadeREST() {
         super(Comment.class);
     }
 
+    /**
+     *
+     * @param entity
+     */
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
@@ -65,6 +72,11 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         super.create(entity);
     }
 
+    /**
+     *
+     * @param id
+     * @param entity
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
@@ -72,6 +84,10 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         super.edit(entity);
     }
 
+    /**
+     *
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
@@ -79,6 +95,11 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         super.remove(super.find(key));
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
@@ -87,6 +108,10 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         return super.find(key);
     }
 
+    /**
+     *
+     * @return
+     */
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
@@ -94,6 +119,12 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         return super.findAll();
     }
 
+    /**
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML})
@@ -101,6 +132,10 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         return super.findRange(new int[]{from, to});
     }
 
+    /**
+     *
+     * @return
+     */
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
@@ -108,6 +143,10 @@ public class CommentFacadeREST extends AbstractFacade<Comment> {
         return String.valueOf(super.count());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     protected EntityManager getEntityManager() {
         return em;

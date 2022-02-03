@@ -19,20 +19,30 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *Esta es la entidad de personal Resource
+ * @author Irkus de la Fuente
+ */
 @NamedQueries({
+    //Buscar personal por tipo
 @NamedQuery(
     name="findPersonalByType",query="SELECT a FROM PersonalResource a WHERE  a.type=:type"
      
-),
+),//Buscar personal por precio
     @NamedQuery(
    name="findPersonalByPrice",query="SELECT p FROM PersonalResource p WHERE p.price=:price"),
+    //buscar por evento y tipo
     @NamedQuery(
     name="findPersonalByEventAndType",query="SELECT p FROM PersonalResource p WHERE p.type=:type AND p.event.event_id=:event"),
     @NamedQuery(
+    //borrar personal por tipo
     name="deletePersonalByType",query="DELETE  FROM PersonalResource p WHERE p.type=:type"),
     @NamedQuery(
+            //modificar la cantidad de un personal
     name="updateQuantityOfAPErsonal",query="SELECT  p FROM PersonalResource p WHERE p.personalresource_id=:personalresource_id"),
     @NamedQuery(
+            //obtener todos los personales de un evento
     name="getPersonalByEvent",query="SELECT  p FROM PersonalResource p WHERE p.event.event_id=:event_id"),
 })
 
@@ -179,7 +189,7 @@ public class PersonalResource implements Serializable {
     }
 /**
  * Set del id
- * @param id 
+     * @param personalresource_id 
  */
     public void setPersonalresource_id(Long personalresource_id) {
         this.personalresource_id = personalresource_id;
