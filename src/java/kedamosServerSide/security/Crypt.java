@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package kedamosServerSide.security;
 
 import java.io.FileNotFoundException;
@@ -39,6 +34,7 @@ import javax.crypto.spec.SecretKeySpec;
 import static kedamosServerSide.security.KeyGenerator.fileReader;
 
 /**
+ * Esta clase representa la encriptacion de las contraseñas y el hasheo.
  *
  * @author Steven Arce
  */
@@ -47,17 +43,21 @@ public class Crypt {
     private static byte[] salt = "esta es la salt!".getBytes();
     private static ResourceBundle rb = ResourceBundle.getBundle("kedamosServerSide.security.EmailCredentials");
     private static ResourceBundle rbp = ResourceBundle.getBundle("kedamosServerSide.security.Private");
-    
+
+    /**
+     * Este metodo encripta simetricamente las credenciales del correo
+     * electronico usado para el reseteo de contraseña.
+     *
+     * @param email Email de la cuenta kedamos
+     * @param password Contraseña de la cuenta kedamos
+     */
     public static void encryptSimetric(String email, String password) {
 
-        //String ret = null;
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
         try {
-            // Creamos el archivo de configuracion con los antiguos datos       
             OutputStream output = new FileOutputStream("java/kedamosServerSide/security/EmailCredentials.properties");
 
-            // Creamos la clase properties y le pasamos el archivo de configuracion
             Properties prop = new Properties();
 
             keySpec = new PBEKeySpec(rb.getString("key").toCharArray(), salt, 65536, 128);
@@ -67,14 +67,14 @@ public class Crypt {
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            
+
             byte[] encodedEmail = cipher.doFinal(email.getBytes());
             byte[] iv = cipher.getIV();
             byte[] emailCombined = concatArrays(iv, encodedEmail);
-            
+
             byte[] encodedPassword = cipher.doFinal(password.getBytes());
             byte[] passwordCombined = concatArrays(iv, encodedPassword);
-            
+
             /**
              * Insertamos en la clase properties los valores antiguos mas las
              * credenciales ecriptadas
@@ -84,12 +84,10 @@ public class Crypt {
             prop.setProperty("key", rb.getString("key"));
             prop.setProperty("email", byteArrayToHexString(emailCombined));
             prop.setProperty("password", byteArrayToHexString(passwordCombined));
-    
+
             // Guardamos los datos en el archivo de configuracion
             prop.store(output, null);
 
-            //fileWriter("java/kedamosServerSide/security/EmailSimetricPasswd.dat", combined);
-            //ret = new String(encodedMessage);
         } catch (InvalidKeyException | NoSuchAlgorithmException
                 | InvalidKeySpecException | BadPaddingException
                 | IllegalBlockSizeException | NoSuchPaddingException e) {
@@ -98,21 +96,24 @@ public class Crypt {
         } catch (IOException ex) {
             Logger.getLogger(Crypt.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        //return encodedMessage;
     }
 
+    /**
+     * Este metodo desencripta simetricamente las credenciales de la cuenta
+     * kedamos.
+     *
+     * @return Retorna las credenciales en un array de string.
+     */
     public static String[] decryptSimetric() {
 
-        //byte[] fileContent = fileReader("java/kedamosServerSide/security/EmailSimetricPasswd.dat");
         String[] emailCredentials = null;
         byte[] emailContent = hexStringToByteArray(rb.getString("email"));
         byte[] passwordContent = hexStringToByteArray(rb.getString("password"));
-        //byte[] decodedMessage = null;
+
         String ret = null;
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
-        //ResourceBundle clave = ResourceBundle.getBundle("KedamosServerSide.security.SimetricKey");
+
         try {
 
             keySpec = new PBEKeySpec(rb.getString("key").toCharArray(), salt, 65536, 128);
@@ -126,10 +127,8 @@ public class Crypt {
             byte[] decodedEmail = cipher.doFinal(Arrays.copyOfRange(emailContent, 16, emailContent.length));
             byte[] decodedPassword = cipher.doFinal(Arrays.copyOfRange(passwordContent, 16, passwordContent.length));
 
-            //et = new String(decodedPassword);
+            emailCredentials = new String[]{new String(decodedEmail), new String(decodedPassword)};
 
-            emailCredentials = new String[]{new String(decodedEmail),new String(decodedPassword)};
-            
         } catch (IllegalBlockSizeException | BadPaddingException
                 | InvalidKeyException | NoSuchAlgorithmException
                 | NoSuchPaddingException | InvalidKeySpecException
@@ -141,9 +140,10 @@ public class Crypt {
     }
 
     /**
+     * Este metodo encripta asimetricamente la contraseña del lado cliente.
      *
-     * @param passwd
-     * @return
+     * @param passwd Contraseña para encriptar.
+     * @return Retorna la contraseña encriptada en hexadecimal.
      */
     public static String encryptAsimetric(String passwd) {
 
@@ -155,7 +155,7 @@ public class Crypt {
             cipher.init(Cipher.ENCRYPT_MODE, readPublicKey());
             //
             encodedMessage = cipher.doFinal(passwd.getBytes());
-            
+
         } catch (IllegalBlockSizeException | BadPaddingException
                 | InvalidKeyException | NoSuchAlgorithmException
                 | NoSuchPaddingException ex) {
@@ -166,6 +166,13 @@ public class Crypt {
 
     }
 
+    /**
+     * Este metodo desencripta asimentricamente las contraseña recibida por
+     * parte del cliente.
+     *
+     * @param password Contraseña a desencriptar.
+     * @return Retorna en texto plano la contraseña desencriptada.
+     */
     public static String decryptAsimetric(String password) {
 
         byte[] passwordContent = hexStringToByteArray(password);
@@ -186,6 +193,13 @@ public class Crypt {
         return new String(decodedMessage);
     }
 
+    /**
+     * Este metodo pretende hashear el texto en claro de la contraseña
+     * desencriptada.
+     *
+     * @param passwd Contraseña en texto plano.
+     * @return Retorna la contraseña hasheada.
+     */
     public static String hash(String passwd) {
 
         byte[] hash = null;
@@ -203,6 +217,12 @@ public class Crypt {
 
     }
 
+    /**
+     * Este metodo convierte un array de bytes a hexadecimal.
+     *
+     * @param bytes Array de bytes a convertir.
+     * @return Retorna un string en hexadecimal.
+     */
     public static String byteArrayToHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -211,6 +231,13 @@ public class Crypt {
         return sb.toString();
     }
 
+    /**
+     * Este metodo pretende convertir un string de hexadecimal a un array de
+     * bytes.
+     *
+     * @param s String a convertir 
+     * @return Retorna un array de bytes.
+     */
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
@@ -221,6 +248,11 @@ public class Crypt {
         return data;
     }
 
+    /**
+     * Genera una contraseña de 16 caracteres.
+     *
+     * @return Retorna una nueva contraseña aleatoria.
+     */
     public static String generatePassword() {
 
         int length = 16;
@@ -243,6 +275,11 @@ public class Crypt {
 
     }
 
+    /**
+     * Este metodo pretende leer la llave publica.
+     * 
+     * @return Retorna la llave publica.
+     */
     public static PublicKey readPublicKey() {
         PublicKey pubKey = null;
         try {
@@ -258,6 +295,11 @@ public class Crypt {
         return pubKey;
     }
 
+    /**
+     * Este metodo pretende leer la llave privada.
+     * 
+     * @return Retorna la llave privada.
+     */
     private static PrivateKey readPrivateKey() {
         PrivateKey priKey = null;
         try {
@@ -273,6 +315,13 @@ public class Crypt {
         return priKey;
     }
 
+    /**
+     * Este metodo concatena dos array de bytes.
+     *
+     * @param array1
+     * @param array2
+     * @return
+     */
     private static byte[] concatArrays(byte[] array1, byte[] array2) {
         byte[] ret = new byte[array1.length + array2.length];
         System.arraycopy(array1, 0, ret, 0, array1.length);

@@ -19,16 +19,18 @@ import java.util.logging.Logger;
 import static kedamosServerSide.security.Crypt.byteArrayToHexString;
 
 /**
+ * Esta clase representa la creacion de las llaves asimetricas.
  *
  * @author Steven Arce
  */
 public class KeyGenerator {
 
     /**
+     * Este metodo crea dos llaves para la encriptacion desencriptacion asimetrica.
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         try {
 
             // La clase KeyPairGenerator se utiliza para generar PARES de claves públicas y privadas
@@ -50,42 +52,42 @@ public class KeyGenerator {
             // Obtener clave pública y clave privada
             byte[] pubKey = keyPair.getPublic().getEncoded();
             byte[] priKey = keyPair.getPrivate().getEncoded();
-            
+
             OutputStream outputPublic = new FileOutputStream("java/kedamosServerSide/security/Public.properties");
             Properties propPublic = new Properties();
             propPublic.setProperty("publicKey", byteArrayToHexString(pubKey));
             propPublic.store(outputPublic, null);
             // Se guarda la clave pública y la clave privada en el archivo especificado
             //fileWriter("java/kedamosServerSide/security/Public.key", pubKey);
-            
+
             OutputStream outputPrivate = new FileOutputStream("java/kedamosServerSide/security/Private.properties");
             Properties propPrivate = new Properties();
             propPrivate.setProperty("privateKey", byteArrayToHexString(priKey));
             propPrivate.store(outputPrivate, null);
-            
+
         } catch (NoSuchAlgorithmException | IOException ex) {
             Logger.getLogger(KeyGenerator.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
+
     /**
      * Escribe un fichero
-     * 
+     *
      * @param path Path del fichero
      * @param text Texto a escibir
      */
     public static void fileWriter(String path, byte[] text) {
         try (FileOutputStream fos = new FileOutputStream(path)) {
-                fos.write(text);
+            fos.write(text);
         } catch (IOException e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     /**
      * Retorna el contenido de un fichero
-     * 
+     *
      * @param path Path del fichero
      * @return El texto del fichero
      */
@@ -99,6 +101,5 @@ public class KeyGenerator {
         }
         return ret;
     }
-    
-    
+
 }
