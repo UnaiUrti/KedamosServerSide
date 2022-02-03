@@ -62,7 +62,7 @@ public class User implements Serializable {
     @Column(insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
-    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<SignIn> signIns;
 
     public Long getUser_id() {

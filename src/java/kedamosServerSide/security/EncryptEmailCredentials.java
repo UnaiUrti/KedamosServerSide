@@ -6,18 +6,22 @@
 package kedamosServerSide.security;
 
 /**
+ * Este clase representa un main para encriptar simetricamente las credenciales
+ * de la cuenta kedamos.
  *
- * @author Freak
+ * @author Steven Arce
  */
 public class EncryptEmailCredentials {
 
     /**
+     * Este metodo encripta las credenciales de la cuenta kedamos.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
 
         // Esto es para encriptar las credenciales del correo electronico
-        Crypt.encryptSimetric("kedamos2022@gmail.com","abcd*1234");
+        Crypt.encryptSimetric("kedamos2022@gmail.com", "abcd*1234");
 
     }
 

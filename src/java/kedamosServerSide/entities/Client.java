@@ -16,12 +16,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entidad que representa al usuario que es un cliente.
+ *
  * @author Steven Arce
  */
 @NamedQueries({
     @NamedQuery(
             name = "getClientByUsername", query = "SELECT c FROM Client c WHERE c.username = :username"
-    ),
+    )
+    ,
     @NamedQuery(
             name = "getClientByEmail", query = "SELECT c FROM Client c WHERE c.email = :email"
     )
@@ -63,7 +65,7 @@ public class Client extends User implements Serializable {
     public void setIsPremium(boolean isPremium) {
         this.isPremium = isPremium;
     }
-    
+
     //@XmlTransient
     public Set<Event> getMyEvents() {
         return myEvents;
@@ -72,7 +74,7 @@ public class Client extends User implements Serializable {
     public void setMyEvents(Set<Event> myEvents) {
         this.myEvents = myEvents;
     }
-    
+
     //@XmlTransient
     public Set<Event> getJoinEvents() {
         return joinEvents;
@@ -81,7 +83,7 @@ public class Client extends User implements Serializable {
     public void setJoinEvents(Set<Event> joinEvents) {
         this.joinEvents = joinEvents;
     }
-    
+
     //@XmlTransient
     public Set<Comment> getMyComments() {
         return myComments;
