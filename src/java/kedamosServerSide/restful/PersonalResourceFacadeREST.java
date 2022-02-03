@@ -29,7 +29,7 @@ import kedamosServerSide.exceptions.ListException;
 import kedamosServerSide.exceptions.PersonalDontExistException;
 
 /**
- *Esta clase maneja los personales asignados a un evento
+ *Esta clase maneja el crud de la entidad personalResource
  * @author Irkus de la Fuente
  */
 
@@ -40,10 +40,17 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
     @PersistenceContext(unitName = "KedamosServerSidePU")
     private EntityManager em;
 
+    /**
+     *Constructor de la ventana
+     */
     public PersonalResourceFacadeREST() {
         super(PersonalResource.class);
     }
 
+    /**
+     *Este metodo crea personales
+     * @param entity
+     */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     public void create(PersonalResource entity) {
@@ -57,6 +64,11 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
        
     }
 
+    /**
+     *Este metodo modifica personales mediante la id y todo el nodo
+     * @param id
+     * @param entity
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
@@ -64,12 +76,21 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
         super.edit(entity);
     }
 
+    /**
+     *Este metodo elimina un personal mediante la id
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
     }
 
+    /**
+     *Este metodo busca un personal mediante la id
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
@@ -77,6 +98,10 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
         return super.find(id);
     }
 
+    /**
+     *Este metodo lista todos los personales
+     * @return
+     */
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
@@ -84,6 +109,12 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
         return super.findAll();
     }
 
+    /**
+     *Este metodo te muestra la cantidad de personales que le especifiques
+     * @param from
+     * @param to
+     * @return
+     */
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML})
@@ -91,6 +122,10 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
         return super.findRange(new int[]{from, to});
     }
 
+    /**
+     *
+     * @return
+     */
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
@@ -184,6 +219,11 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
             
     }
     
+    /**
+     *Mostrar todos los personales de un evento concreto
+     * @param event_id
+     * @return
+     */
     @GET
     @Path("getPersonalByEvent/{event_id}")
     @Produces({MediaType.APPLICATION_XML})
@@ -194,6 +234,11 @@ private final static Logger logger = Logger.getLogger("KedamosServerSide.restful
         
             return per;
 }
+
+    /**
+     *
+     * @return
+     */
     @Override
     protected EntityManager getEntityManager() {
         return em;
